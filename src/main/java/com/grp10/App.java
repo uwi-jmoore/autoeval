@@ -1,17 +1,33 @@
 package com.grp10;
 
-/**
- * Hello world!
- */
-public final class App {
-    private App() {
-    }
+import filehandler.FileHandler;
 
-    /**
-     * Says hello to the world.
-     * @param args The arguments of the program.
-     */
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
+import java.io.IOException;
+import java.util.Scanner;
+
+
+public final class App {
+
+
+    public static void main(String[] args) throws IOException {
+        Scanner userInput = new Scanner(System.in);
+        System.out.println("What is the path to the Student Assignments? ");
+
+        //for user input
+        String directoryPath = userInput.nextLine();
+
+        FileHandler fileHandler = new FileHandler();
+
+        //for testing
+        directoryPath = "C:\\Users\\Chimera\\Desktop\\Project_Testbed" +
+            "\\Unzipping\\extraction_test\\extraction_src";
+
+
+
+        fileHandler.extractAssignments(directoryPath);
+
+
+        //Area for user creation of Tests to Evaluate Assignments
+
     }
 }
