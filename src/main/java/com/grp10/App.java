@@ -27,7 +27,7 @@ public final class App {
         fileHandler.extractAssignments(directoryPath);
 
 
-        //Area for user creation of Tests to Evaluate Assignments
+        //
 
     }
 }
