@@ -1,14 +1,13 @@
 package UnzipFileTest;
 
 import filehandler.zipservice.ZipUtility;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
 import java.util.Arrays;
 
-import static filehandler.filehelperservice.Helpers.getFileName;
+import static filehandler.filehelperservice.FileOperationHelpers.getFileName;
 import static org.junit.jupiter.api.Assertions.*;
 public class ZipUtilityTest {
     @ParameterizedTest
@@ -24,7 +23,7 @@ public class ZipUtilityTest {
             + "unzipTest"
         );
         int fileSize = 8192;//expected max size of student assignments in bytes
-        ZipUtility zipUtility = new ZipUtility(fileSize);
+        ZipUtility zipUtility = new ZipUtility();
         zipUtility.setFileBuffer(fileSize);
         zipUtility.unzipAssignment(testAssignment,outputDirectory);
         assertAll("Testing ZipUtility",
