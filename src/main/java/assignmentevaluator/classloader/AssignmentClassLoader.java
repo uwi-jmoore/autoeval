@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 
 public class AssignmentClassLoader extends ClassLoader{
 
-    public Class<?> loadClassFromFileAlpha(String classFilePath) throws IOException, ClassNotFoundException {
+    public Class<?> loadClassFromFileAlpha(String classFilePath) throws IOException{
         Path path = Paths.get(classFilePath);
         byte[] classBytes = Files.readAllBytes(path);
 
