@@ -11,34 +11,10 @@ import static java.util.List.of;
 
 public class FileAggregate implements DirectoryAggregate{
     private List<File> directoryFiles;
-    private List<String> expectedFiles = new ArrayList<>();
 
     @Override
     public DirectoryIterator createFileIterator() {
         return new FileIterator(directoryFiles);
-    }
-
-    @Override
-    public boolean addFileToExpected(String filename){
-        expectedFiles.add(filename);
-        return expectedFiles.contains(filename);
-    }
-
-    @Override
-    public boolean removeFileFromExpected(String filename) {
-        expectedFiles.remove(filename);
-        return !expectedFiles.contains(filename);
-    }
-
-    @Override
-    public boolean validateFile(File file) {
-        Pattern pattern = Pattern.compile(
-                String.join("|",expectedFiles),
-                Pattern.CASE_INSENSITIVE
-        );
-        Matcher matcher = pattern.matcher(file.getName());
-
-        return matcher.find();
     }
 
     @Override
@@ -55,9 +31,6 @@ public class FileAggregate implements DirectoryAggregate{
         return directoryFiles;
     }
 
-    @Override
-    public List<String> getExpectedFiles(){
-        return expectedFiles;
-    }
+
 
 }
