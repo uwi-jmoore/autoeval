@@ -37,6 +37,8 @@ public class AssignmentEvaluator {
                 if(!checkAssignmentFiles(assignmentFeedBack,studentAssignment)){
                     assignmentCompileTest(assignmentFeedBack,studentAssignment);
                     assignmentRunTest(assignmentFeedBack,studentAssignment);
+
+
                 }else{
                     System.out.println("Files Missing In Assignment, cannot continue run");
                 }
@@ -95,6 +97,7 @@ public class AssignmentEvaluator {
         testFeedback.setMarks(testResult);
         testFeedback.setTestType("Compile Test");
         testFeedback.setFeedbackMsg(testResult == marks? "Assignment Compiles": "Assignment failed to compile");
+
         assignmentFeedBack.addTestResults(testFeedback);
     }
 
@@ -126,13 +129,21 @@ public class AssignmentEvaluator {
     }
 
     private File getMainClass(File studentAssignmentDirectory){
-        File[] assignmentJavaFiles = getDirectoryFilesOfExt(studentAssignmentDirectory,".java");
+        File[] assignmentJavaFiles = getAssignmentFiles(studentAssignmentDirectory,".java");
         for(File f: assignmentJavaFiles){
             if(Objects.equals(getFileName(f), "ChatBotSimulation")){
                 return f;
             }
         }
         return null;
+    }
+
+    private File[] getAssignmentFiles(File studentAssignmentDirectory, String type){
+        return getDirectoryFilesOfExt(studentAssignmentDirectory,type);
+    }
+
+    private void ChatbotAttributeTests(File studentAssignmentDirectory){
+           
     }
 
 
