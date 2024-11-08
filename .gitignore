@@ -2,7 +2,6 @@
 /.idea/shelf/
 /target/
 .idea/
-
 /workspace.xml
 .vscode
 *.iml
