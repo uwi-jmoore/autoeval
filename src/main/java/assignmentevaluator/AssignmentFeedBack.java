@@ -1,13 +1,17 @@
 package assignmentevaluator;
 
+import assignmentevaluator.feedback.TestFeedback;
+import assignmenttests.AssignmentTest;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AssignmentFeedBack {
-    private List<TestFeedback> testResults;
-    private List<String> expectedFiles;
+    private List<TestFeedback> testResults = new ArrayList<>();
+    private List<String> expectedFiles = new ArrayList<>();
 
     private String studentID;
     private String studentName;
