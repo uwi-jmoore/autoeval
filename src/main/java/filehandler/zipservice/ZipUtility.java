@@ -42,7 +42,11 @@ public class ZipUtility {
         try(FileInputStream fileInputStream = new FileInputStream(zippedAssignment)){
             ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
             ZipEntry zipElement;
-            String destinationPath = assignmentContainer.getAbsolutePath();
+
+            //getting name
+            String zipFileName = getFileName(zippedAssignment);
+
+            String destinationPath = assignmentContainer.getAbsolutePath() + File.separator + zipFileName;
             while((zipElement = zipInputStream.getNextEntry()) != null){
                 File newFile = new File(
                     destinationPath
