@@ -54,9 +54,9 @@ public class AssignmentEvaluator {
                     assignmentRunTest(assignmentFeedBack,studentAssignment);
 
 
+
                     //class level tests
                     assignmentClassTest(assignmentFeedBack,studentAssignment);
-
                 }else{
                     System.out.println("Files Missing In Assignment, cannot continue run");
                 }
@@ -166,6 +166,7 @@ public class AssignmentEvaluator {
         }
         return null;
     }
+
     private File[] getAssignmentFiles(File studentAssignmentDirectory, String type){
         return getDirectoryFilesOfExt(studentAssignmentDirectory,type);
     }

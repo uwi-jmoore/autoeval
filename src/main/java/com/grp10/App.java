@@ -22,8 +22,7 @@ public final class App {
         FileHandler fileHandler = new FileHandler();
 
         //for testing
-        directoryPath = "C:\\Users\\Chimera\\Desktop\\Project_Testbed" +
-            "\\Unzipping\\extraction_test\\main_assign";
+        directoryPath = "C:\\Users\\felix\\Downloads\\Project Src\\ASSIGNMENT 1\\AssignmentTarget";
 
 
         File extractionTarget = fileHandler.extractAssignments(directoryPath);
