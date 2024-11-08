@@ -13,8 +13,9 @@ public class AssignmentProgramLevelTest {
     @Test
     public void testCompileAssignment(){
         AssignmentCompile compileTest = new AssignmentCompile();
+
         compileTest.setAssignmentDirectory(pathToFile("C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping\\" +
-            "extraction_test\\Assignments-main_assign\\Assignment_1"));
+            "extraction_test\\Assignments-main_assign\\Isabella_Augustus_816031354_A1\\Assignment_1"));
         compileTest.setMarks(5);
         assertAll("",
             () -> assertTrue(compileTest.evaluateProgramLevelTest()),
@@ -25,11 +26,14 @@ public class AssignmentProgramLevelTest {
     @Test
     public void testRunAssignment(){
         AssignmentRun runTest = new AssignmentRun();
-        File assignmentDirectory = pathToFile("C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping\\" +
-            "extraction_test\\Assignments-main_assign\\Assignment_1");
-        File mainClass = pathToFile("C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping\\extraction_test" +
-            "\\Assignments-main_assign\\Assignment_1\\ChatBotSimulation.java");
 
+        File mainClass = pathToFile("C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping\\" +
+            "extraction_test\\Assignments-main_assign\\Isabella_Augustus_816031354_A1\\" +
+            "Assignment_1\\ChatBotSimulation.java");
+//        File assignmentDirectory = pathToFile("C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping\\" +
+//            "extraction_test\\Assignments-main_assign\\Assignment_1");
+
+        File assignmentDirectory = mainClass.getParentFile();
         runTest.setAssignmentDirectory(assignmentDirectory);
 
         runTest.setMainFile(mainClass);

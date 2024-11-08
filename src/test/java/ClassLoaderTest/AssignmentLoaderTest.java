@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import assignmentevaluator.classloader.AssignmentClassLoader;
-import filehandler.traversal.DirectoryIterator;
+
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 
@@ -15,8 +15,9 @@ public class AssignmentLoaderTest {
     @Test
     public void testLoadClassFromFile() throws IOException{
         //
-        String classFilePath = "C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping" +
-            "\\extraction_test\\Assignments-main_assign\\Assignment_1\\ChatBot.class";
+        String classFilePath = "C:\\Users\\Chimera\\Desktop\\Project_Testbed\\" +
+            "Unzipping\\extraction_test\\Assignments-main_assign\\" +
+            "Isabella_Augustus_816031354_A1\\Assignment_1\\ChatBot.class";
 
         AssignmentClassLoader testLoader = new AssignmentClassLoader();
         Class<?> loadedClass = testLoader.loadClassFromFileAlpha(classFilePath);
