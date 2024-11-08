@@ -1,15 +1,22 @@
 package Grading;//change this
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;//change this
+import org.junit.Test;
+
+import ChatBot;
 
 public class ChatBotTest{
     private ChatBot chatBot;
@@ -44,17 +51,13 @@ public class ChatBotTest{
 //attribute testing
     @Test
     public void testChatBotName() {
-        // Test if the ChatBot name is not null
-        // System.out.println("--Testing if Chat Bot name exists\n");
+   
         String find = "chatBotName"; 
-        boolean fieldExists = false;
-
         // Loop through the fields in the class using the fieldNames array
         for (Field field : fieldNames) {
 
             if (field.getName().equals(find)) {
 
-                fieldExists = true;
                 System.out.println("--Chat Bot Name Attribute exists\n");
 
                 if(field.getType().equals(String.class)){
@@ -182,10 +185,152 @@ public class ChatBotTest{
 
     }
 
+
+    //METHOD TESTING
+    @Test//test to check the
+    public void  testChatBotConstructor(){//chat Bot contructor testing.....
+
+        try {
+        Class<?> chatBotClass= Class.forName("ChatBot");
+        // CHANGE THIS LATER ON!!!!! FOR TESTING
+        Constructor<?> chatBotConstructor=chatBotClass.getDeclaredConstructor();
+        assertNotNull("Default constructor should exist",chatBotConstructor);
+        
+        Object chatBotInstace=chatBotConstructor.newInstance();
+
+        if(chatBotInstace!=null){
+
+            System.out.println("Chat Bot Default Constructor exists !");
+            System.out.println("Assigning Full Marks! - 3 marks.");
+
+            totalScore+=3;
+        }
+
+        }catch (ClassNotFoundException e) {
+            fail("Class ChatBot not found");
+        }catch (NoSuchMethodException e) {
+           fail("Default constructor not found in ChatBot class");
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            fail("Constructor did not work as expected: " + e.getMessage());
+        }
+    
+    }
+
+    @Test
+    public void testChatBotOverloadedConstructor() {
+        try {
+            Class<?> chatBotClass = Class.forName("ChatBot");
+
+            Constructor<?> overloadedConstructor = chatBotClass.getDeclaredConstructor(int.class);
+            assertNotNull("Overloaded constructor with (String, int) should exist",overloadedConstructor);
+
+            Object chatBotInstace=overloadedConstructor.newInstance(5);
+
+            if(chatBotInstace!=null){
+
+            System.out.println("Chat Bot Default Constructor exists !");
+            System.out.println("Assigning Full Marks! - 3 marks.");
+
+            totalScore+=3;
+            }
+
+        }catch (ClassNotFoundException e) {
+            fail("Class ChatBot not found");
+        }catch (NoSuchMethodException e) {
+           fail("Overloaded constructor not found in ChatBot class");
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            fail("Overloaded Constructor did not work as expected: " + e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void testGetChatBotName(){
+        System.out.println("----------------------------------------------------------\n");
+        String chatBotName=chatBot.getChatBotName();
+        if(chatBotName instanceof String){
+            System.out.println("Method getChatBotName Works Correctly- 1 marks\n");
+            totalScore+=1;
+        }else{
+            messages.add("getChatBotName does not return a string");
+            System.out.println("getChatBotName does not return a string- 0 marks\n");
+        }
+        System.out.println("----------------------------------------------------------\n");
+
+    }
+
+
+    @Test
+    public void testgetNumResponsesGenerated(){
+
+        System.out.println("----------------------------------------------------------\n");
+
+        Object number=chatBot.getNumResponsesGenerated();
+
+        if(number instanceof Integer){//Supposed to return 0;
+            System.out.println("Method getNumResponsesGenerated Works Correctly- 1 marks\n");
+            totalScore+=1;
+        }else{
+            messages.add("Method getNumResponsesGenerated  does not return an integer");
+            System.out.println("Method getNumResponsesGenerated does not return an integer- 0 marks\n");
+        }
+        System.out.println("----------------------------------------------------------\n");
+
+
+
+    }
+
+    @Test
+    public void testgetTotalNumResponsesGenerated(){
+
+        System.out.println("----------------------------------------------------------\n");
+
+        Object number=chatBot.getTotalNumResponsesGenerated();
+
+        if(number instanceof Integer){//Supposed to return 0;
+            System.out.println("Method getTotalNumResponsesGenerated() Works Correctly- 2 marks\n");
+            totalScore+=2;
+        }else{
+            messages.add("Method getTotalNumResponsesGenerated()  does not return an integer");
+            System.out.println("Method getTotalNumResponsesGenerated() does not return an integer- 0 marks\n");
+        }
+        System.out.println("----------------------------------------------------------\n");
+
+
+    }
+
+
+    
+    @Test
+    public void testgetTotalNumMessagesRemaining(){
+
+        System.out.println("----------------------------------------------------------\n");
+
+        Object number=chatBot.getTotalNumMessagesRemaining();
+
+        if(number instanceof Integer){//if number is an integer
+        try {
+            Integer num = (Integer)number;
+            Integer result=10-chatBot.getNumResponsesGenerated();
+
+            assertEquals(result, num);//check to see if it is correct
+            System.out.println("The Method getNumResponsesGenerated() Works Correctly- 3 marks " );
+            totalScore+=3;
+
+            }catch (AssertionError e) {
+                System.out.println("The Method getNumResponsesGenerated() Does not return the correct output- 0 marks" + e.getMessage());
+                messages.add("The Method getNumResponsesGenerated() Does not return the correct output- 0 marks");
+            }
+
+        messages.add("The Method getNumResponsesGenerated() Does not return an integer- 0 marks");
+        }
+    }
+
     @AfterClass
     public static void printTotalScore() {
         System.out.println("Total score after all tests: " + totalScore);
     }
 }
+
 
 
