@@ -31,15 +31,6 @@ public class AssignmentFeedBack {
         return expectedFiles;
     }
 
-    public boolean validateFile(File file) {
-        Pattern pattern = Pattern.compile(
-            String.join("|",expectedFiles),
-            Pattern.CASE_INSENSITIVE
-        );
-        Matcher matcher = pattern.matcher(file.getName());
-
-        return matcher.find();
-    }
 
 
     //Getters

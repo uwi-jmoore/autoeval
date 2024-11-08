@@ -1,6 +1,4 @@
 package ClassLoaderTest;
-import static filehandler.filehelperservice.FileOperationHelpers.createAssignmentIterator;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import assignmentevaluator.classloader.AssignmentClassLoader;
@@ -9,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 
 import java.io.IOException;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
 public class AssignmentLoaderTest {
     @Test
@@ -20,10 +18,13 @@ public class AssignmentLoaderTest {
             "Isabella_Augustus_816031354_A1\\Assignment_1\\ChatBot.class";
 
         AssignmentClassLoader testLoader = new AssignmentClassLoader();
-        Class<?> loadedClass = testLoader.loadClassFromFileAlpha(classFilePath);
+        Class<?> loadedClass = testLoader.loadClassFromFile(classFilePath);
+
         assertAll("Testing Loading of class",
             () -> assertEquals(loadedClass.getName(), "ChatBot"),
-            () -> assertTrue(Modifier.isPublic(loadedClass.getModifiers()))
+            () -> assertTrue(Modifier.isPublic(loadedClass.getModifiers())),
+            () -> assertSame("chatBotName", loadedClass.getDeclaredFields()[0].getName())
+
         );
 
 
@@ -36,7 +37,7 @@ public class AssignmentLoaderTest {
             "\\src\\test\\java\\FileIteratorTest\\IteratorTest.java";
 
         AssignmentClassLoader testLoader = new AssignmentClassLoader();
-        Class<?> loadedClass = testLoader.loadClassFromFileAlpha(testFilePath);
+        Class<?> loadedClass = testLoader.loadClassFromFile(testFilePath);
         assertAll("Testing Loading of class",
             () -> assertEquals(loadedClass.getName(), "IteratorTest")
         );
