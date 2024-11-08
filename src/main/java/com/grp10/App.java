@@ -32,7 +32,7 @@ public final class App {
 
         AssignmentEvaluator evaluator = new AssignmentEvaluator();
         evaluator.setStudentAssignmentDirectory(extractionTarget);
-
+        evaluator.evaluateAssignments();
 
 //        testingRun();
 

@@ -5,6 +5,9 @@ import java.io.*;
 import static assignmenttests.programlevel.ProgramLevelTestHelpers.compileAssignment;
 
 public class AssignmentRun extends AssignmentOperational{
+
+    private int assignmentExitCode;
+
     @Override
     public boolean evaluateProgramLevelTest() {
         if (compileAssignment(getAssignmentDirectory())){
@@ -22,6 +25,7 @@ public class AssignmentRun extends AssignmentOperational{
                 Process process = processBuilder.start();
                 runInputs(process);
                 int exitCode = process.waitFor();
+                assignmentExitCode = exitCode;
                 return exitCode == 0;
             }
             catch (IOException ioException){
@@ -49,6 +53,10 @@ public class AssignmentRun extends AssignmentOperational{
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int getAssignmentExitCode(){
+        return assignmentExitCode;
     }
 
 }

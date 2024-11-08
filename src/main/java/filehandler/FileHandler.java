@@ -24,8 +24,8 @@ public class FileHandler {
         if(containerDirectory != null){
             DirectoryIterator zippedAssignmentsIterator = createZippedAssignmentsIterator(assignmentDirectoryPath);
             while (zippedAssignmentsIterator.hasNext()){
-                File extractionTarget = zippedAssignmentsIterator.next();
-                zipUtility.unzipAssignment(extractionTarget,containerDirectory);
+                File zippedAssignment = zippedAssignmentsIterator.next();
+                zipUtility.unzipAssignment(zippedAssignment,containerDirectory);
             }
         }
         return containerDirectory;

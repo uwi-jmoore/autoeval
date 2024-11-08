@@ -1,7 +1,7 @@
 package assignmenttests.programlevel;
 
-public interface ProgramTest {
-    boolean evaluateProgramLevelTest();
-    int getMarks();
+import assignmenttests.AssignmentTest;
 
+public interface ProgramTest extends AssignmentTest {
+    boolean evaluateProgramLevelTest();
 }
