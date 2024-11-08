@@ -1,17 +1,30 @@
 package assignmentevaluator;
 
+import assignmentevaluator.classloader.AssignmentClassLoader;
 import assignmentevaluator.feedback.types.ConcreteTestFeedback;
+import assignmenttests.classlevel.concreteproducts.AttributeSignatureTest;
 import assignmenttests.programlevel.AssignmentCompile;
 import assignmenttests.programlevel.AssignmentFilesAllPresent;
 import assignmenttests.programlevel.AssignmentRun;
 import filehandler.traversal.DirectoryIterator;
+import org.assertj.core.util.VisibleForTesting;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.platform.engine.discovery.DiscoverySelectors;
+import org.junit.platform.launcher.Launcher;
+import org.junit.platform.launcher.LauncherDiscoveryRequest;
+import org.junit.platform.launcher.core.LauncherFactory;
+import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
+import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Objects;
 
 import static filehandler.filehelperservice.FileOperationHelpers.*;
+import static org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder.request;
 
 
 //facade for evaluating all assignments
@@ -35,10 +48,15 @@ public class AssignmentEvaluator {
                 loadStudentInfo(assignmentFeedBack,studentAssignment.getParentFile());
 
                 if(!checkAssignmentFiles(assignmentFeedBack,studentAssignment)){
+                    //program level tests
                     assignmentCompileTest(assignmentFeedBack,studentAssignment);
+
                     assignmentRunTest(assignmentFeedBack,studentAssignment);
 
 
+
+                    //class level tests
+                    assignmentClassTest(assignmentFeedBack,studentAssignment);
                 }else{
                     System.out.println("Files Missing In Assignment, cannot continue run");
                 }
@@ -101,6 +119,7 @@ public class AssignmentEvaluator {
         assignmentFeedBack.addTestResults(testFeedback);
     }
 
+
     private void assignmentRunTest(AssignmentFeedBack assignmentFeedBack, File studentAssignmentDirectory){
         AssignmentRun runtTest = new AssignmentRun();
         ConcreteTestFeedback testFeedback = new ConcreteTestFeedback();
@@ -138,12 +157,59 @@ public class AssignmentEvaluator {
         return null;
     }
 
+    private File getFile(File studentAssignmentDirectory, String fileName, String fileType){
+        File[] assignmentJavaFiles = getAssignmentFiles(studentAssignmentDirectory,fileType);
+        for(File f: assignmentJavaFiles){
+            if(Objects.equals(getFileName(f), fileName)){
+                return f;
+            }
+        }
+        return null;
+    }
+
     private File[] getAssignmentFiles(File studentAssignmentDirectory, String type){
         return getDirectoryFilesOfExt(studentAssignmentDirectory,type);
     }
 
-    private void ChatbotAttributeTests(File studentAssignmentDirectory){
-           
+    private void assignmentClassTest(AssignmentFeedBack assignmentFeedBack, File studentAssignmentDirectory){
+        //running Chatbot.class, testing attributes
+        ConcreteTestFeedback testFeedback = new ConcreteTestFeedback();
+        int marks = 10;
+        testFeedback.setTestType("Attribute Signature Test");
+
+        AttributeSignatureTest signatureTest = new AttributeSignatureTest();
+
+        signatureTest.setClassFilePath(Objects.requireNonNull(
+            getFile(studentAssignmentDirectory, "ChatBot", ".class"))
+            .getAbsolutePath()
+        );
+
+        TestExecutionSummary testReturn = getTestReturn(signatureTest.getClass()).getSummary();
+
+        if(testReturn.getTestsFailedCount()==0){
+            System.out.println("All passed, marks awarded");
+            testFeedback.setFeedbackMsg("Attribute Test passed");
+        }else{
+            System.out.println("Signature test failed, 0");
+            testFeedback.setFeedbackMsg("Attribute Test failed");
+
+        }
+        assignmentFeedBack.addTestResults(testFeedback);
+    }
+
+    private SummaryGeneratingListener getTestReturn(Class<?> targetClass){
+        Launcher launcher = LauncherFactory.create();
+        SummaryGeneratingListener listener = new SummaryGeneratingListener();
+
+        LauncherDiscoveryRequest request = request()
+            .selectors(
+                DiscoverySelectors.selectClass(targetClass)
+            )
+            .build();
+
+        // Execute the tests
+        launcher.execute(request, listener);
+        return listener;
     }
 
 

@@ -2,13 +2,11 @@ package com.grp10;
 
 import assignmentevaluator.AssignmentEvaluator;
 import filehandler.FileHandler;
-import assignmenttests.programlevel.AssignmentRun;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-import static filehandler.filehelperservice.FileOperationHelpers.pathToFile;
 
 
 public final class App {
@@ -33,22 +31,8 @@ public final class App {
         evaluator.setStudentAssignmentDirectory(extractionTarget);
         evaluator.evaluateAssignments();
 
-//        testingRun();
 
         //
 
-    }
-    public static void testingRun(){
-        AssignmentRun runTest = new AssignmentRun();
-        File assignmentDirectory = pathToFile("C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping\\" +
-            "extraction_test\\Assignments-main_assign\\Assignment_1");
-        File mainClass = pathToFile("C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping\\extraction_test" +
-            "\\Assignments-main_assign\\Assignment_1\\ChatBotSimulation.java");
-
-        runTest.setAssignmentDirectory(assignmentDirectory);
-
-        runTest.setMainFile(mainClass);
-
-        System.out.println(runTest.evaluateProgramLevelTest());
     }
 }
