@@ -1,0 +1,15 @@
+# Default ignored files
+/.idea/shelf/
+/target/
+.idea/
+
+/workspace.xml
+.vscode
+*.iml
+*.pdf
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.tmp
