@@ -23,7 +23,10 @@ public class AssignmentLoaderTest {
         assertAll("Testing Loading of class",
             () -> assertEquals(loadedClass.getName(), "ChatBot"),
             () -> assertTrue(Modifier.isPublic(loadedClass.getModifiers())),
-            () -> assertSame("chatBotName", loadedClass.getDeclaredFields()[0].getName())
+            () -> {
+                Field field = loadedClass.getDeclaredField("chatBotName");
+                assertNotNull(field);
+            }
 
         );
 
