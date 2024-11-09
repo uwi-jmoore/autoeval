@@ -1,40 +1,38 @@
 package filehandler;
 
-import filehandler.traversal.DirectoryAggregate;
+
 import filehandler.traversal.DirectoryIterator;
-import filehandler.traversal.FileAggregate;
+
 import filehandler.zipservice.ZipUtility;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.rmi.AccessException;
 
-
-import static filehandler.filehelperservice.Helpers.getFileName;
-import static filehandler.filehelperservice.Helpers.getParentDirectoryPath;
+import static filehandler.filehelperservice.FileOperationHelpers.*;
 
 
 public class FileHandler {
-    public void extractAssignments(String assignmentDirectoryPath) throws IOException {
+    public File extractAssignments(String assignmentDirectoryPath) throws IOException {
         int fileSize = 8192;//expected max size of student assignments in bytes
-        ZipUtility zipUtility = new ZipUtility(fileSize);
+        ZipUtility zipUtility = new ZipUtility();
         zipUtility.setFileBuffer(fileSize);
+        zipUtility.suppressExtractionLog(true);
+
         File containerDirectory = generateContainerDirectory(assignmentDirectoryPath);
         if(containerDirectory != null){
             DirectoryIterator zippedAssignmentsIterator = createZippedAssignmentsIterator(assignmentDirectoryPath);
             while (zippedAssignmentsIterator.hasNext()){
-                File extractionTarget = zippedAssignmentsIterator.next();
-                zipUtility.unzipAssignment(extractionTarget,containerDirectory);
+                File zippedAssignment = zippedAssignmentsIterator.next();
+                zipUtility.unzipAssignment(zippedAssignment,containerDirectory);
             }
         }
+        return containerDirectory;
     }
 
     private DirectoryIterator createZippedAssignmentsIterator(String sourceDirectoryPath) throws IOException {
-        DirectoryAggregate fileAggregate = new FileAggregate();
-        fileAggregate.populateList(sourceDirectoryPath);
-        return fileAggregate.createFileIterator();
+        return  createAssignmentIterator(sourceDirectoryPath);
     }
     private File generateContainerDirectory(String sourceDirectoryPath){
         File assignments = new File(sourceDirectoryPath);
@@ -46,13 +44,34 @@ public class FileHandler {
         boolean containerCreated;
         try{
             Files.deleteIfExists(Paths.get(targetPath));
-        }catch (NoSuchFileException e){
-            System.out.println("No Duplicates detected");
-        }catch (IOException ioException){
-            System.out.println("Invalid Permissions");
-        }finally {
+        }
+        catch (NoSuchFileException e){
+            System.out.println("No duplicates detected: " + e.getMessage());
+        }
+        catch(DirectoryNotEmptyException notEmptyException){
+            deletePopulatedDirectory(pathToFile(targetPath));
+        }
+
+        catch (FileSystemException fileSystemException){
+            System.err.println("FileSystemException occurred when trying to delete existing duplicate directory: "
+                + fileSystemException.getMessage());
+            System.err.println("Directory currently locked by another process");
+        }
+        catch (AccessException accessException){
+            System.err.println("AccessException occurred when trying to delete existing duplicate directory: "
+                + accessException.getMessage());
+            System.err.println("Invalid File Permissions");
+        }
+        catch (IOException ioException){
+            System.err.println("IOException occurred when trying to delete existing duplicate directory: "
+                + ioException.getMessage());
+        }
+        finally {
             containerDirectory = new File(targetPath);
             containerCreated = containerDirectory.mkdirs();
+            if (!containerCreated) {
+                System.err.println("Failed to create directory: " + targetPath);
+            }
         }
         return containerCreated ? containerDirectory : null;
     }

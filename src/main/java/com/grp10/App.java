@@ -1,9 +1,12 @@
 package com.grp10;
 
+import assignmentevaluator.AssignmentEvaluator;
 import filehandler.FileHandler;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+
 
 
 public final class App {
@@ -19,15 +22,17 @@ public final class App {
         FileHandler fileHandler = new FileHandler();
 
         //for testing
-        directoryPath = "C:\\Users\\Chimera\\Desktop\\Project_Testbed" +
-            "\\Unzipping\\extraction_test\\extraction_src";
+        directoryPath = "C:\\Users\\felix\\Downloads\\Project Src\\ASSIGNMENT 1\\AssignmentTarget";
 
 
+        File extractionTarget = fileHandler.extractAssignments(directoryPath);
 
-        fileHandler.extractAssignments(directoryPath);
+        AssignmentEvaluator evaluator = new AssignmentEvaluator();
+        evaluator.setStudentAssignmentDirectory(extractionTarget);
+        evaluator.evaluateAssignments();
 
 
-        //Area for user creation of Tests to Evaluate Assignments
+        //
 
     }
 }
