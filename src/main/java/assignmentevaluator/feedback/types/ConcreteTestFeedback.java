@@ -29,4 +29,13 @@ public class ConcreteTestFeedback implements TestFeedback {
     public void setMarks(int marks){
         this.marksToAddToTotal = marks;
     }
+
+    @Override
+    public String toString() {
+        return "ConcreteTestFeedback{" +
+            "FeedbackMsg='" + FeedbackMsg + '\'' +
+            ", marks=" + marksToAddToTotal +
+            ", testType='" + testType + '\'' +
+            '}';
+    }
 }
