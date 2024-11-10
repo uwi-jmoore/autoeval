@@ -178,12 +178,13 @@ public class AttributeSignatureTest implements ClassTest{
                     if(!Modifier.isStatic(attrModifiers)){
                         attrDefaultValue = getDefaultValue(field,loadedClass);
                     }
-                    assertTrue(attrDefaultValue != null && attrDefaultValue.equals(convToInteger(defaultValue)));
+                    assertTrue(attrDefaultValue != null && attrDefaultValue.equals(convToInteger(defaultValue)),
+                        "no default value encountered or incorrect default value encountered");
                 }else{//has no default value
                     if(!Modifier.isStatic(attrModifiers)){
                         attrDefaultValue = getDefaultValue(field,loadedClass);
                     }
-                    assertTrue(isDefaultValue(attrDefaultValue,field.getType()));
+                    assertTrue(isDefaultValue(attrDefaultValue,field.getType()),"default value for attribute encountered");
                 }
             }
 
