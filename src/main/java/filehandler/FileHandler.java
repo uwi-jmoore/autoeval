@@ -32,41 +32,24 @@ public class FileHandler {
     }
 
     private DirectoryIterator createZippedAssignmentsIterator(String sourceDirectoryPath) throws IOException {
-        return  createAssignmentIterator(sourceDirectoryPath);
+        return createAssignmentIterator(sourceDirectoryPath);
     }
     private File generateContainerDirectory(String sourceDirectoryPath){
         File assignments = new File(sourceDirectoryPath);
         File containerDirectory;
         String targetPath = getParentDirectoryPath(assignments) +
             File.separator +
-            "Assignments-" +
+            "Assignmentsa-" +
             getFileName(assignments);
         boolean containerCreated;
-        try{
-            Files.deleteIfExists(Paths.get(targetPath));
-        }
-        catch (NoSuchFileException e){
-            System.out.println("No duplicates detected: " + e.getMessage());
-        }
-        catch(DirectoryNotEmptyException notEmptyException){
+        if(Files.exists(Paths.get(targetPath))){
             deletePopulatedDirectory(pathToFile(targetPath));
-        }
-
-        catch (FileSystemException fileSystemException){
-            System.err.println("FileSystemException occurred when trying to delete existing duplicate directory: "
-                + fileSystemException.getMessage());
-            System.err.println("Directory currently locked by another process");
-        }
-        catch (AccessException accessException){
-            System.err.println("AccessException occurred when trying to delete existing duplicate directory: "
-                + accessException.getMessage());
-            System.err.println("Invalid File Permissions");
-        }
-        catch (IOException ioException){
-            System.err.println("IOException occurred when trying to delete existing duplicate directory: "
-                + ioException.getMessage());
-        }
-        finally {
+            containerDirectory = new File(targetPath);
+                containerCreated = containerDirectory.mkdirs();
+                if (!containerCreated) {
+                    System.err.println("Failed to create directory: " + targetPath);
+                }
+        }else {
             containerDirectory = new File(targetPath);
             containerCreated = containerDirectory.mkdirs();
             if (!containerCreated) {
@@ -75,4 +58,5 @@ public class FileHandler {
         }
         return containerCreated ? containerDirectory : null;
     }
+
 }
