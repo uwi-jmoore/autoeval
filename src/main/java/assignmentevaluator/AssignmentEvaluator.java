@@ -50,6 +50,7 @@ public class AssignmentEvaluator {
                     System.out.println("Files Missing In Assignment, cannot continue run");
                 }
 
+                System.out.println("Test Results for student: "+assignmentFeedBack.getStudentName()+" : "+assignmentFeedBack.getTestResults());
 
 
 
@@ -176,15 +177,15 @@ public class AssignmentEvaluator {
         chatBotSig.setTestSetupDetailMap(createAttributeTestSetupMap(
             "chatBotName",
             "String",
-            "False",
+            "false",
             "int_min",
-            "False",
-            "False"
+            "false",
+            "false"
         ));
         chatBotSig.execute();
-        System.out.println("Test Results at testing chatbotSig1 for student: "+chatBotSig.getAssignmentFeedBack().getStudentName()+" : "+chatBotSig.getAssignmentFeedBack().getTestResults());
 
         //numResponsesGenerated
+
         ClassTestExecutor numResponsesGeneratedSig = new ClassTestExecutor();
         numResponsesGeneratedSig.setClassTest(AttributeSignatureTestFactory.createClassTest());
         numResponsesGeneratedSig.setEvaluatingFile(chatBot);
@@ -193,14 +194,15 @@ public class AssignmentEvaluator {
         numResponsesGeneratedSig.setTestSetupDetailMap(createAttributeTestSetupMap(
             "numResponsesGenerated",
             "int",
-            "False",
+            "false",
             "int_min",
-            "False",
-            "False"
+            "false",
+            "false"
         ));
         numResponsesGeneratedSig.execute();
 
-        System.out.println("Test Results at testing chatbotSig2 for student: "+chatBotSig.getAssignmentFeedBack().getStudentName()+" : "+chatBotSig.getAssignmentFeedBack().getTestResults());
+        //
+
         //Method Signature Tests
 
         //Method Logic Tests

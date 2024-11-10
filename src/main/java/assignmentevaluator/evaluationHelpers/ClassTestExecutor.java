@@ -1,10 +1,11 @@
 package assignmentevaluator.evaluationHelpers;
 
 import assignmentevaluator.AssignmentFeedBack;
+import assignmentevaluator.feedback.TestFeedback;
 import assignmentevaluator.feedback.types.ConcreteTestFeedback;
 import assignmenttests.classlevel.ClassTest;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
-
+import org.junit.platform.launcher.listeners.TestExecutionSummary.Failure;
 import java.io.File;
 import java.util.Map;
 
@@ -21,11 +22,11 @@ public class ClassTestExecutor {
 
     private String testType;
 
-
-
     public ClassTestExecutor(){
         testFeedback = new ConcreteTestFeedback();
     }
+
+
 
     public void setAssignmentFeedBack(AssignmentFeedBack assignmentFeedBack) {
         this.assignmentFeedBack = assignmentFeedBack;
@@ -59,7 +60,7 @@ public class ClassTestExecutor {
         test.setClassFilePath(evalutatingFile.getAbsolutePath());
         test.setUpTestDetails(testSetupDetailMap);
         TestExecutionSummary testReturn = getTestReturn(test.getClass()).getSummary();
-        if(testReturn.getTestsFailedCount() == 0){
+        if(testReturn.getTestsFailedCount() == 0 && testReturn.getContainersFailedCount()==0){
             handleAllPass(testReturn);
         }else{
             handleFailure(testReturn);
@@ -70,12 +71,20 @@ public class ClassTestExecutor {
 
     private void handleAllPass(TestExecutionSummary testReturn){
         testFeedback.setMarks(marks);
-        testFeedback.setFeedbackMsg(testType + "Passed,");
+        testFeedback.setFeedbackMsg("All Tests Passed");
+
     }
 
     private void handleFailure(TestExecutionSummary testReturn){
         testFeedback.setMarks(0);
-        testFeedback.setFeedbackMsg(testType + "Failed,");
+        StringBuilder failureMsg = new StringBuilder("These tests failed: ");
+        Failure[] failures = testReturn.getFailures().toArray(new Failure[0]);
+        for(Failure failure : failures){
+            failureMsg.append("Test: ").append(failure.getTestIdentifier().getDisplayName()).append(" failed. Reason: ").append(failure.getException().getMessage()).append("\t");
+
+        }
+        testFeedback.setFeedbackMsg(String.valueOf(failureMsg));
+
     }
 
 }
