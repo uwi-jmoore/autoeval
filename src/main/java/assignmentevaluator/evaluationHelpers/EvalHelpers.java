@@ -3,9 +3,10 @@ package assignmentevaluator.evaluationHelpers;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.LauncherDiscoveryRequest;
+import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
-
+import org.junit.platform.launcher.TestPlan;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +50,20 @@ public class EvalHelpers {
                 DiscoverySelectors.selectClass(targetClass)
             )
             .build();
+
+        //for debugging
+        TestPlan testPlan = launcher.discover(request);
+
+        System.out.println("Discovered Tests: " + testPlan.getRoots().size());
+        for (TestIdentifier testIdentifier : testPlan.getRoots()) {
+            System.out.println("Root Identifier: " + testIdentifier.getDisplayName());
+            for (TestIdentifier child : testPlan.getChildren(testIdentifier)) {
+                System.out.println("Child Identifier: " + child.getDisplayName());
+                for(TestIdentifier grandChild : testPlan.getChildren(child)){
+                    System.out.println("GrandChild Identifier: " + grandChild.getDisplayName());
+                }
+            }
+        }
 
         // Execute the tests
         launcher.execute(request, listener);

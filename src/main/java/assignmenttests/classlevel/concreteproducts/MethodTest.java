@@ -6,7 +6,7 @@ import org.junit.jupiter.api.TestInstance;
 import java.util.Map;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class MethodSignatureTest implements ClassTest {
+public class MethodTest implements ClassTest {
     private Class<?> loadedClass;
 
     private String classFilePath;
