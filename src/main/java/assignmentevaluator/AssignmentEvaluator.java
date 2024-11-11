@@ -154,9 +154,11 @@ public class AssignmentEvaluator {
                     break;
                 case "ChatBotGenerator":
                     System.out.println("Running class tests for class " + getFileName(f));
+                    //handleChatBotGenerator(assignmentFeedBack,f);
                     break;
                 case "ChatBotSimulation":
                     System.out.println("Running class tests for class " + getFileName(f));
+                    //handleChatBotSimulation(assignmentFeedBack,f);
                     break;
             }
 
@@ -165,6 +167,7 @@ public class AssignmentEvaluator {
     }
 
     private void handleChatBot(AssignmentFeedBack assignmentFeedBack, File chatBot){
+        // messageLimit
         ClassTestExecutor messageLimit = new ClassTestExecutor();
         messageLimit.setClassTest(AttributeSignatureTestFactory.createClassTest());
         messageLimit.setEvaluatingFile(chatBot);
@@ -178,7 +181,9 @@ public class AssignmentEvaluator {
             "false",
             "true"
         ));
+        messageLimit.execute();
 
+        // messageNumber
         ClassTestExecutor messageNumber = new ClassTestExecutor();
         messageNumber.setClassTest(AttributeSignatureTestFactory.createClassTest());
         messageNumber.setEvaluatingFile(chatBot);
@@ -192,6 +197,7 @@ public class AssignmentEvaluator {
             "false",
             "true"
         ));
+        messageNumber.execute();
 
         //chatBotName
         ClassTestExecutor chatBotSig = new ClassTestExecutor();
@@ -210,7 +216,6 @@ public class AssignmentEvaluator {
         chatBotSig.execute();
 
         //numResponsesGenerated
-
         ClassTestExecutor numResponsesGeneratedSig = new ClassTestExecutor();
         numResponsesGeneratedSig.setClassTest(AttributeSignatureTestFactory.createClassTest());
         numResponsesGeneratedSig.setEvaluatingFile(chatBot);
@@ -234,6 +239,7 @@ public class AssignmentEvaluator {
     }
 
     private void handleChatBotPlatform(AssignmentFeedBack assignmentFeedBack, File chatBotPlatform){
+        // bots
         ClassTestExecutor bots = new ClassTestExecutor();
         bots.setClassTest(AttributeSignatureTestFactory.createClassTest());
         bots.setEvaluatingFile(chatBotPlatform);
@@ -247,7 +253,15 @@ public class AssignmentEvaluator {
             "false",
             "false"
         ));
+        bots.execute();
     }
 
+    private void handleChatBotGenerator(AssignmentFeedBack assignmentFeedBack, File chatBotGenerator){
+        // method signature tests
+    }
+
+    private void handleChatBotSimulation(AssignmentFeedBack assignmentFeedBack, File ChatBotSimulation){
+        // method signature tests
+    }
 
 }
