@@ -11,9 +11,7 @@ public class AssignmentRun extends AssignmentOperational{
     @Override
     public boolean evaluateProgramLevelTest() {
         if (compileAssignment(getAssignmentDirectory())){
-
             String directory = getAssignmentDirectory().getAbsolutePath();
-
             String className = getMainFile().getName().replace(".java", "");
             ProcessBuilder processBuilder = new ProcessBuilder(
                 "java",
@@ -48,8 +46,6 @@ public class AssignmentRun extends AssignmentOperational{
                 os.flush();
                 Thread.sleep(100);//100 milliseconds seems to be the magic number to get this work, DO NOT CHANGE
             }
-
-
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

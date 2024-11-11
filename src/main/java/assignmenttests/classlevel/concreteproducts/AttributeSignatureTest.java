@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Stream;
-import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -107,8 +106,6 @@ public class AttributeSignatureTest implements ClassTest{
         if (classFilePath != null && attributeName != null && dataType!=null && defaultValue!=null && isFinal!=null && isStatic!=null&&hasDefaultValue!=null) {
             return Stream.of(
                 Arguments.of(
-                    classFilePath,
-                    attributeName,
                     dataType,
                     isFinal,
                     isStatic,
@@ -125,7 +122,7 @@ public class AttributeSignatureTest implements ClassTest{
 
     @BeforeEach
     public void initializeLoadedClass() throws IOException, NoSuchFieldException {
-        AssignmentClassLoader testLoader = new AssignmentClassLoader();
+        testLoader = new AssignmentClassLoader();
         loadedClass = testLoader.loadClassFromFile(classFilePath);
         field = loadedClass.getDeclaredField(attributeName);
     }
@@ -139,10 +136,7 @@ public class AttributeSignatureTest implements ClassTest{
     @ParameterizedTest
     @MethodSource("provideAttributeElements")
     @DisplayName("Attribute Signature Test")
-    public void testAttributeSignature(String classFilePath ,String attributeName, String dataType, String isFinal, String isStatic, String hasDefaultValue, String defaultValue){
-//        AssignmentClassLoader testLoader = new AssignmentClassLoader();
-//        Class<?> loadedClass = testLoader.loadClassFromFile(classFilePath);
-//        Field field = loadedClass.getDeclaredField(attributeName);
+    public void testAttributeSignature(String dataType, String isFinal, String isStatic, String hasDefaultValue, String defaultValue){
         String testDatatype = Objects.equals(dataType, "String") ? "java.lang." + dataType : dataType;
         int attrModifiers = field.getModifiers();
         assertAll("heading",
@@ -173,7 +167,6 @@ public class AttributeSignatureTest implements ClassTest{
             () -> {
                 field.setAccessible(true);
                 Object attrDefaultValue = null;
-                Object inst = null;
                 if(convToBoolean(hasDefaultValue) ){//has default value
                     if(!Modifier.isStatic(attrModifiers)){
                         attrDefaultValue = getDefaultValue(field,loadedClass);
@@ -187,7 +180,6 @@ public class AttributeSignatureTest implements ClassTest{
                     assertTrue(isDefaultValue(attrDefaultValue,field.getType()),"default value for attribute encountered");
                 }
             }
-
 
         );
     }
