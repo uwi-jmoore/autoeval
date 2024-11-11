@@ -150,6 +150,7 @@ public class AssignmentEvaluator {
                     break;
                 case "ChatBotPlatform":
                     System.out.println("Running class tests for class " + getFileName(f));
+                    handleChatBotPlatform(assignmentFeedBack,f);
                     break;
                 case "ChatBotGenerator":
                     System.out.println("Running class tests for class " + getFileName(f));
@@ -162,11 +163,35 @@ public class AssignmentEvaluator {
 
         }
     }
+
     private void handleChatBot(AssignmentFeedBack assignmentFeedBack, File chatBot){
+        ClassTestExecutor messageLimit = new ClassTestExecutor();
+        messageLimit.setClassTest(AttributeSignatureTestFactory.createClassTest());
+        messageLimit.setEvaluatingFile(chatBot);
+        messageLimit.setAssignmentFeedBack(assignmentFeedBack);
+        messageLimit.setMarks(3);
+        messageLimit.setTestSetupDetailMap(createAttributeTestSetupMap(
+            "messageLimit",
+            "int",
+            "true",
+            "10",
+            "false",
+            "true"
+        ));
 
-        //Attribute Signature Tests remaining messageLimit, messageNumber
-
-
+        ClassTestExecutor messageNumber = new ClassTestExecutor();
+        messageNumber.setClassTest(AttributeSignatureTestFactory.createClassTest());
+        messageNumber.setEvaluatingFile(chatBot);
+        messageNumber.setAssignmentFeedBack(assignmentFeedBack);
+        messageNumber.setMarks(2);
+        messageNumber.setTestSetupDetailMap(createAttributeTestSetupMap(
+            "messageNumber",
+            "int",
+            "false",
+            "int_min",
+            "false",
+            "true"
+        ));
 
         //chatBotName
         ClassTestExecutor chatBotSig = new ClassTestExecutor();
@@ -208,6 +233,21 @@ public class AssignmentEvaluator {
         //Method Logic Tests
     }
 
+    private void handleChatBotPlatform(AssignmentFeedBack assignmentFeedBack, File chatBotPlatform){
+        ClassTestExecutor bots = new ClassTestExecutor();
+        bots.setClassTest(AttributeSignatureTestFactory.createClassTest());
+        bots.setEvaluatingFile(chatBotPlatform);
+        bots.setAssignmentFeedBack(assignmentFeedBack);
+        bots.setMarks(2);
+        bots.setTestSetupDetailMap(createAttributeTestSetupMap(
+            "bots",
+            "ArrayList<ChatBot>",
+            "false",
+            "int_min",
+            "false",
+            "false"
+        ));
+    }
 
 
 }
