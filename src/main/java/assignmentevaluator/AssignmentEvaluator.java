@@ -1,30 +1,50 @@
 package assignmentevaluator;
 
 
-import assignmentevaluator.evaluationHelpers.ClassTestExecutor;
-import assignmentevaluator.feedback.types.ConcreteTestFeedback;
-
-import assignmenttests.classlevel.factory.AttributeSignatureTestFactory;
-import assignmenttests.programlevel.AssignmentCompile;
-import assignmenttests.programlevel.AssignmentFilesAllPresent;
-import assignmenttests.programlevel.AssignmentRun;
-import filehandler.traversal.DirectoryIterator;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-import static assignmentevaluator.evaluationHelpers.EvalHelpers.*;
-import static filehandler.filehelperservice.FileOperationHelpers.*;
+import assignmentevaluator.evaluationHelpers.ClassTestExecutor;
+import static assignmentevaluator.evaluationHelpers.EvalHelpers.createAttributeTestSetupMap;
+import static assignmentevaluator.evaluationHelpers.EvalHelpers.getAssignmentFiles;
+import static assignmentevaluator.evaluationHelpers.EvalHelpers.getFile;
+import assignmentevaluator.feedback.types.ConcreteTestFeedback;
+import assignmenttests.classlevel.factory.AttributeSignatureTestFactory;
+import assignmenttests.programlevel.AssignmentCompile;
+import assignmenttests.programlevel.AssignmentFilesAllPresent;
+import assignmenttests.programlevel.AssignmentRun;
+import static filehandler.filehelperservice.FileOperationHelpers.createAssignmentIterator;
+import static filehandler.filehelperservice.FileOperationHelpers.getFileName;
+import filehandler.traversal.DirectoryIterator;
+
+/**
+ * Facade class for evaluating student assignments.
+ * This class handles the evaluation process, which includes checking if the required files are present,
+ * running program-level tests, and performing class-level tests for each student’s assignment.
+ */
 
 
 //facade for evaluating all assignments
 public class AssignmentEvaluator {
     private File studentAssignmentDirectory;
 
+    /**
+     * Sets the directory containing student assignments.
+     * @param studentAssignmentDirectory the directory containing the student assignments
+     */
+
     public void setStudentAssignmentDirectory(File studentAssignmentDirectory) {
         this.studentAssignmentDirectory = studentAssignmentDirectory;
     }
+
+     /**
+     * Evaluates all assignments in the specified student assignment directory.
+     * This method iterates through each assignment, loads student information,
+     * and runs the necessary tests for each student's assignment.
+     * @throws IOException if an I/O error occurs while reading the files
+     */
+
     public void evaluateAssignments() throws IOException {
         DirectoryIterator assignmentIterator = createAssignmentIterator(studentAssignmentDirectory.getAbsolutePath());
 
@@ -59,12 +79,29 @@ public class AssignmentEvaluator {
 
         }
     }
+
+
+    /**
+     * Adds the expected files for the assignment to the feedback object.
+     * These expected files must be present in the student's assignment.
+     * @param assignmentFeedBack the feedback object for the assignment
+     */
+
     private void addAssignmentExpectedFiles(AssignmentFeedBack assignmentFeedBack){
         assignmentFeedBack.addFileToExpected("ChatBot");
         assignmentFeedBack.addFileToExpected("ChatBotGenerator");
         assignmentFeedBack.addFileToExpected("ChatBotPlatform");
         assignmentFeedBack.addFileToExpected("ChatBotSimulation");
     }
+
+    /**
+     * Checks if all the required files are present in the student's assignment.
+     * If any files are missing, it returns true, and no further tests are run.
+     * @param assignmentFeedBack the feedback object for the assignment
+     * @param studentAssignmentDirectory the directory containing the student's assignment
+     * @return true if files are missing, false otherwise
+     */
+
 
     private boolean checkAssignmentFiles(AssignmentFeedBack assignmentFeedBack, File studentAssignmentDirectory){
         AssignmentFilesAllPresent presentCheck = new AssignmentFilesAllPresent();
@@ -85,12 +122,28 @@ public class AssignmentEvaluator {
         return filesMissing;
     }
 
+     /**
+     * Loads the student information (ID, name, and assignment title) from the assignment directory name.
+     * @param assignmentFeedBack the feedback object for the assignment
+     * @param assignment the student's assignment directory
+     */
+
+
     private void loadStudentInfo(AssignmentFeedBack assignmentFeedBack, File assignment){
         String[] studentInfo = assignment.getName().split("_");
         assignmentFeedBack.setStudentID(studentInfo[2]);
         assignmentFeedBack.setStudentName(studentInfo[0] + " " + studentInfo[1]);
         assignmentFeedBack.setAssignmentTitle(studentInfo[3]);
     }
+
+
+    /**
+     * Runs the compile test on the student's assignment.
+     * Checks whether the student's assignment compiles successfully.
+     * @param assignmentFeedBack the feedback object for the assignment
+     * @param studentAssignmentDirectory the directory containing the student's assignment
+     */
+
 
     private void assignmentCompileTest(AssignmentFeedBack assignmentFeedBack, File studentAssignmentDirectory){
         AssignmentCompile compileTest = new AssignmentCompile();
@@ -107,6 +160,14 @@ public class AssignmentEvaluator {
 
         assignmentFeedBack.addTestResults(testFeedback);
     }
+
+
+    /**
+     * Runs the run test on the student's assignment.
+     * Checks whether the student's assignment runs successfully and returns an exit code of 0.
+     * @param assignmentFeedBack the feedback object for the assignment
+     * @param studentAssignmentDirectory the directory containing the student's assignment
+     */
 
 
     private void assignmentRunTest(AssignmentFeedBack assignmentFeedBack, File studentAssignmentDirectory){
@@ -136,6 +197,13 @@ public class AssignmentEvaluator {
         assignmentFeedBack.addTestResults(testFeedback);
     }
 
+    /**
+     * Runs the class-level tests for each class in the student's assignment.
+     * Tests include checking the attributes and methods of the assignment classes.
+     * @param assignmentFeedBack the feedback object for the assignment
+     * @param studentAssignmentDirectory the directory containing the student's assignment
+     */
+
 
     private void assignmentClassTestActual(AssignmentFeedBack assignmentFeedBack, File studentAssignmentDirectory){
         //get list of all classes
@@ -163,6 +231,13 @@ public class AssignmentEvaluator {
 
         }
     }
+
+
+    /**
+     * Handles the tests for the ChatBot class in the student's assignment.
+     * @param assignmentFeedBack the feedback object for the assignment
+     * @param chatBot the ChatBot class file to be tested
+     */
 
     private void handleChatBot(AssignmentFeedBack assignmentFeedBack, File chatBot){
         ClassTestExecutor messageLimit = new ClassTestExecutor();
@@ -232,6 +307,12 @@ public class AssignmentEvaluator {
 
         //Method Logic Tests
     }
+
+    /**
+     * Handles the tests for the ChatBotPlatform class in the student's assignment.
+     * @param assignmentFeedBack the feedback object for the assignment
+     * @param chatBotPlatform the ChatBotPlatform class file to be tested
+     */
 
     private void handleChatBotPlatform(AssignmentFeedBack assignmentFeedBack, File chatBotPlatform){
         ClassTestExecutor bots = new ClassTestExecutor();
