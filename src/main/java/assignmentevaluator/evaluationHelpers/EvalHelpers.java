@@ -17,6 +17,11 @@ import static filehandler.filehelperservice.FileOperationHelpers.getFileName;
 import static org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder.request;
 
 public class EvalHelpers {
+    private static boolean debugMode;
+    public static void setDebugMode(boolean debug){
+        EvalHelpers.debugMode = debug;
+    }
+
     public static File[] getAssignmentFiles(File studentAssignmentDirectory, String type){
         return getDirectoryFilesOfExt(studentAssignmentDirectory,type);
     }
@@ -51,16 +56,18 @@ public class EvalHelpers {
             )
             .build();
 
-        //for debugging
         TestPlan testPlan = launcher.discover(request);
 
-        System.out.println("Discovered Tests: " + testPlan.getRoots().size());
-        for (TestIdentifier testIdentifier : testPlan.getRoots()) {
-            System.out.println("Root Identifier: " + testIdentifier.getDisplayName());
-            for (TestIdentifier child : testPlan.getChildren(testIdentifier)) {
-                System.out.println("Child Identifier: " + child.getDisplayName());
-                for(TestIdentifier grandChild : testPlan.getChildren(child)){
-                    System.out.println("GrandChild Identifier: " + grandChild.getDisplayName());
+        //for debugging
+        if(debugMode){
+            System.out.println("Discovered Tests: " + testPlan.getRoots().size());
+            for (TestIdentifier testIdentifier : testPlan.getRoots()) {
+                System.out.println("Root Identifier: " + testIdentifier.getDisplayName());
+                for (TestIdentifier child : testPlan.getChildren(testIdentifier)) {
+                    System.out.println("Child Identifier: " + child.getDisplayName());
+                    for(TestIdentifier grandChild : testPlan.getChildren(child)){
+                        System.out.println("GrandChild Identifier: " + grandChild.getDisplayName());
+                    }
                 }
             }
         }
@@ -69,4 +76,6 @@ public class EvalHelpers {
         launcher.execute(request, listener);
         return listener;
     }
+
 }
+

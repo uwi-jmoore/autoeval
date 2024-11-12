@@ -38,9 +38,16 @@ public class FileOperationHelpers {
         return String.valueOf(file.getParentFile());
     }
 
-    public static DirectoryIterator createAssignmentIterator(String sourceDirectoryPath) throws IOException {
+    public static DirectoryIterator createAssignmentIterator(String sourceDirectoryPath){
         DirectoryAggregate assignmentDirectory = new FileAggregate();
-        assignmentDirectory.populateList(sourceDirectoryPath);
+        try {
+            assignmentDirectory.populateList(sourceDirectoryPath);
+        } catch (IOException e) {
+            System.err.println("Failed to Populate List as Directory Not Present or is Empty. " +
+                "Exception Message: "+ e.getMessage());
+            throw new RuntimeException(e);
+
+        }
         return assignmentDirectory.createFileIterator();
 
     }
@@ -65,5 +72,11 @@ public class FileOperationHelpers {
             }
         }
         file.delete();
+    }
+
+    public static String getFileNameFromPathString(String filePath){
+        String[] parts = filePath.split("[\\\\/]");
+        String name = parts[parts.length - 1];
+        return name.split("[.]")[0];
     }
 }

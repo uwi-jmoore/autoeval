@@ -6,15 +6,13 @@ import filehandler.traversal.DirectoryIterator;
 import filehandler.zipservice.ZipUtility;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.*;
-import java.rmi.AccessException;
 
 import static filehandler.filehelperservice.FileOperationHelpers.*;
 
 
 public class FileHandler {
-    public File extractAssignments(String assignmentDirectoryPath) throws IOException {
+    public File extractAssignments(String assignmentDirectoryPath){
         int fileSize = 8192;//expected max size of student assignments in bytes
         ZipUtility zipUtility = new ZipUtility();
         zipUtility.setFileBuffer(fileSize);
@@ -31,7 +29,7 @@ public class FileHandler {
         return containerDirectory;
     }
 
-    private DirectoryIterator createZippedAssignmentsIterator(String sourceDirectoryPath) throws IOException {
+    private DirectoryIterator createZippedAssignmentsIterator(String sourceDirectoryPath){
         return createAssignmentIterator(sourceDirectoryPath);
     }
     private File generateContainerDirectory(String sourceDirectoryPath){
@@ -39,7 +37,7 @@ public class FileHandler {
         File containerDirectory;
         String targetPath = getParentDirectoryPath(assignments) +
             File.separator +
-            "Assignmentsa-" +
+            "Assignments-" +
             getFileName(assignments);
         boolean containerCreated;
         if(Files.exists(Paths.get(targetPath))){
