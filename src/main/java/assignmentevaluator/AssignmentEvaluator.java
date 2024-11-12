@@ -11,7 +11,6 @@ import assignmenttests.programlevel.AssignmentRun;
 import filehandler.traversal.DirectoryIterator;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 import static assignmentevaluator.evaluationHelpers.EvalHelpers.*;
@@ -25,7 +24,7 @@ public class AssignmentEvaluator {
     public void setStudentAssignmentDirectory(File studentAssignmentDirectory) {
         this.studentAssignmentDirectory = studentAssignmentDirectory;
     }
-    public void evaluateAssignments() throws IOException {
+    public void evaluateAssignments(){
         DirectoryIterator assignmentIterator = createAssignmentIterator(studentAssignmentDirectory.getAbsolutePath());
 
         while(assignmentIterator.hasNext()){
@@ -165,33 +164,8 @@ public class AssignmentEvaluator {
     }
 
     private void handleChatBot(AssignmentFeedBack assignmentFeedBack, File chatBot){
-        ClassTestExecutor messageLimit = new ClassTestExecutor();
-        messageLimit.setClassTest(AttributeSignatureTestFactory.createClassTest());
-        messageLimit.setEvaluatingFile(chatBot);
-        messageLimit.setAssignmentFeedBack(assignmentFeedBack);
-        messageLimit.setMarks(3);
-        messageLimit.setTestSetupDetailMap(createAttributeTestSetupMap(
-            "messageLimit",
-            "int",
-            "true",
-            "10",
-            "false",
-            "true"
-        ));
 
-        ClassTestExecutor messageNumber = new ClassTestExecutor();
-        messageNumber.setClassTest(AttributeSignatureTestFactory.createClassTest());
-        messageNumber.setEvaluatingFile(chatBot);
-        messageNumber.setAssignmentFeedBack(assignmentFeedBack);
-        messageNumber.setMarks(2);
-        messageNumber.setTestSetupDetailMap(createAttributeTestSetupMap(
-            "messageNumber",
-            "int",
-            "false",
-            "int_min",
-            "false",
-            "true"
-        ));
+
 
         //chatBotName
         ClassTestExecutor chatBotSig = new ClassTestExecutor();
@@ -227,19 +201,48 @@ public class AssignmentEvaluator {
         numResponsesGeneratedSig.execute();
 
         //
+        ClassTestExecutor messageLimitSig = new ClassTestExecutor();
+        messageLimitSig.setClassTest(AttributeSignatureTestFactory.createClassTest());
+        messageLimitSig.setEvaluatingFile(chatBot);
+        messageLimitSig.setAssignmentFeedBack(assignmentFeedBack);
+        messageLimitSig.setMarks(3);
+        messageLimitSig.setTestSetupDetailMap(createAttributeTestSetupMap(
+            "messageLimit",
+            "int",
+            "true",
+            "10",
+            "false",
+            "true"
+        ));
+        messageLimitSig.execute();
 
+
+        ClassTestExecutor messageNumberSig = new ClassTestExecutor();
+        messageNumberSig.setClassTest(AttributeSignatureTestFactory.createClassTest());
+        messageNumberSig.setEvaluatingFile(chatBot);
+        messageNumberSig.setAssignmentFeedBack(assignmentFeedBack);
+        messageNumberSig.setMarks(2);
+        messageNumberSig.setTestSetupDetailMap(createAttributeTestSetupMap(
+            "messageNumber",
+            "int",
+            "false",
+            "int_min",
+            "false",
+            "true"
+        ));
+        messageNumberSig.execute();
         //Method Signature Tests
 
         //Method Logic Tests
     }
 
     private void handleChatBotPlatform(AssignmentFeedBack assignmentFeedBack, File chatBotPlatform){
-        ClassTestExecutor bots = new ClassTestExecutor();
-        bots.setClassTest(AttributeSignatureTestFactory.createClassTest());
-        bots.setEvaluatingFile(chatBotPlatform);
-        bots.setAssignmentFeedBack(assignmentFeedBack);
-        bots.setMarks(2);
-        bots.setTestSetupDetailMap(createAttributeTestSetupMap(
+        ClassTestExecutor botsSig = new ClassTestExecutor();
+        botsSig.setClassTest(AttributeSignatureTestFactory.createClassTest());
+        botsSig.setEvaluatingFile(chatBotPlatform);
+        botsSig.setAssignmentFeedBack(assignmentFeedBack);
+        botsSig.setMarks(2);
+        botsSig.setTestSetupDetailMap(createAttributeTestSetupMap(
             "bots",
             "ArrayList<ChatBot>",
             "false",
@@ -247,6 +250,7 @@ public class AssignmentEvaluator {
             "false",
             "false"
         ));
+        botsSig.execute();
     }
 
 
