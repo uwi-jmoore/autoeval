@@ -28,18 +28,8 @@ public class ApplicationExecutor {
      * @throws IOException If there is an issue with file handling or directory access.
      */
     public void execute(String directoryPath) throws IOException {
-        // Creating a Scanner object to read user input
-        Scanner userInput = new Scanner(System.in);
-        System.out.println("What is the path to the Student Assignments? ");
-
-        // Prompt user for the directory path where student assignments are located
-        directoryPath = userInput.nextLine();
-
         // Create an instance of FileHandler to manage the extraction of assignments
         FileHandler fileHandler = new FileHandler();
-
-        // For testing purposes, we override the user input with a hardcoded path
-        // directoryPath = "C:\\Users\\felix\\Downloads\\Project Src\\ASSIGNMENT 1\\AssignmentTarget";
 
         // Extract the assignments from the provided directory path
         File extractionTarget = fileHandler.extractAssignments(directoryPath);
