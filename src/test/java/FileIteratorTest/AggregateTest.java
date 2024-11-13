@@ -14,8 +14,7 @@ public class AggregateTest {
 
     @Test
     public void testPopulateList() throws IOException{
-        String directoryPath = "C:\\Users\\Chimera\\Desktop\\Project_Testbed\\" +
-                "Unzipping\\extraction_test\\extraction_src";
+        String directoryPath = "C:\\Users\\felix\\Downloads\\Project Src\\ASSIGNMENT 1\\AssignmentTarget";
         FileAggregate testDir = new FileAggregate();
         File[] files = new File(directoryPath).listFiles();
         if (files == null) { // Check if the path is invalid or not a directory
