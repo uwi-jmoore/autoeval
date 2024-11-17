@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"filehandler.traversal","c":"DirectoryAggregate","l":"createFileIterator()"},{"p":"filehandler.traversal","c":"DirectoryAggregate","l":"getDirectoryFiles()"},{"p":"filehandler.traversal","c":"DirectoryAggregate","l":"populateList(String)","u":"populateList(java.lang.String)"}];updateSearchResults();

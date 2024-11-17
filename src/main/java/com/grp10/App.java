@@ -1,38 +1,29 @@
 package com.grp10;
 
-import assignmentevaluator.AssignmentEvaluator;
-import filehandler.FileHandler;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-
-
 public final class App {
-
-
     public static void main(String[] args) throws IOException {
+        // Hardcoded directory path for the sake of testing
+        String directoryPath = "C:\\Users\\felix\\Downloads\\Project src\\ASSIGNMENT 1\\AssignmentTarget";
+
+        // Creating a Scanner object to read user input
         Scanner userInput = new Scanner(System.in);
         System.out.println("What is the path to the Student Assignments? ");
 
-        //for user input
-        String directoryPath = userInput.nextLine();
+        // Prompt user for the directory path where student assignments are located
+        directoryPath = userInput.nextLine();
 
-        FileHandler fileHandler = new FileHandler();
+        // Create an instance of ApplicationExecutor
+        ApplicationExecutor applicationExecutor = new ApplicationExecutor();
 
-        //for testing
-        directoryPath = "C:\\Users\\felix\\Downloads\\Project Src\\ASSIGNMENT 1\\AssignmentTarget";
-
-
-        File extractionTarget = fileHandler.extractAssignments(directoryPath);
-
-        AssignmentEvaluator evaluator = new AssignmentEvaluator();
-        evaluator.setStudentAssignmentDirectory(extractionTarget);
-        evaluator.evaluateAssignments();
-
-
-        //
-
+        try {
+            // Call the execute method, passing the directory path
+            applicationExecutor.execute(directoryPath);
+        } catch (IOException e) {
+            // Handle any potential IOExceptions
+            System.err.println("An error occurred: " + e.getMessage());
+        }
     }
 }

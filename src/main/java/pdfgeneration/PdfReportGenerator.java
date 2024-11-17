@@ -1,14 +1,32 @@
 package pdfgeneration;
 
+import java.io.FileOutputStream;
+import java.util.List;
+
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 
-import java.io.FileOutputStream;
-import java.util.List;
-
+/**
+ * The PdfReportGenerator class implements the ReportGeneratorInterface and generates
+ * a PDF report containing the results of JUnit tests.
+ * <p>
+ * This class uses the iText library to create and format the PDF document. The generated
+ * report includes a title, individual test results (PASS/FAIL), and total points.
+ * </p>
+ * 
+ * @see ReportGeneratorInterface
+ */
 public class PdfReportGenerator implements ReportGeneratorInterface {
 
+    /**
+     * Generates a PDF report with the given test results and total points.
+     * 
+     * @param testResults A list of TestResult objects containing the individual test names
+     *                    and their pass/fail status.
+     * @param totalPoints The total number of points scored in the test.
+     * @param outputFileName The name of the output PDF file to be generated.
+     */
     @Override
     public void generateReport(List<TestResult> testResults, int totalPoints, String outputFileName) {
         try (PdfWriter writer = new PdfWriter(new FileOutputStream(outputFileName));
@@ -35,4 +53,5 @@ public class PdfReportGenerator implements ReportGeneratorInterface {
         }
     }
 }
+
 
