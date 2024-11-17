@@ -60,7 +60,11 @@
       <artifactId>junit-platform-launcher</artifactId>
       <version>1.9.1</version>
     </dependency>
-
+    <dependency>
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+      <version>3.24.2</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

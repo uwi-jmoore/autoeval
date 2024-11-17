@@ -17,9 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ConstructorTest extends ClassTestBase implements ParameterComposed, ModifiesClassAttributes {
-    private int index;
-    private static List<ClassTestParameter> parameterInput;
-    private static List<ClassTestAttributeExpectedValue> methodModifiedClassAttributes;
+    protected int index;
+    protected static List<ClassTestParameter> parameterInput;
+    protected static List<ClassTestAttributeExpectedValue> methodModifiedClassAttributes;
 
 
     @Override
@@ -41,7 +41,7 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         }
     }
 
-    private void setConstructorTestDetails(Map<String, Object> setUpContent){
+    protected void setConstructorTestDetails(Map<String, Object> setUpContent){
         Object constructorParams = setUpContent.get("methodParameterInputs");
         Object constructorAffectedAttrs = setUpContent.get("methodModifiedClassAttributes");
         parameterInput = null;
@@ -103,7 +103,7 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         return paramArray.toArray(new Class<?>[0]);
     }
 
-    private Constructor<?>[] getSortedConstructors(){
+    protected Constructor<?>[] getSortedConstructors(){
         Constructor<?>[] constructors = loadedClass.getConstructors();
         Arrays.sort(constructors, (c1, c2) -> {
             //Sorting by parameters ascending
@@ -125,12 +125,12 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         return constructors;
     }
 
-    private int getUniqueAttributesAffected(){
+    protected int getUniqueAttributesAffected(){
         Set<ClassTestAttribute> uniqueAttributes = new HashSet<>(methodModifiedClassAttributes);
         return uniqueAttributes.size();
     }
 
-    private boolean handleConstructorTest(Object classInstance){
+    protected boolean handleConstructorTest(Object classInstance){
         int constructorCount = loadedClass.getConstructors().length;
         int modifiedClassAttributeListSize = methodModifiedClassAttributes.size();
         if((modifiedClassAttributeListSize / getUniqueAttributesAffected()) == constructorCount){
@@ -177,14 +177,9 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         return true;
     }
 
-    private Object getConstructorInstance(Constructor<?> constructor)
+    protected Object getConstructorInstance(Constructor<?> constructor)
         throws InvocationTargetException, InstantiationException, IllegalAccessException {
         return constructor.newInstance(getInputParametersValues());
-//        if(constructor.getParameterCount() == 0){//Parameterless Constructor
-//            return constructor.newInstance();
-//        }else{//Constructor with Parameter(s)
-//            return constructor.newInstance(getInputParametersValues());
-//        }
     }
 
 

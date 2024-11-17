@@ -40,5 +40,7 @@ public class ApplicationExecutor {
 
         // Evaluate the assignments
         evaluator.evaluateAssignments();
+
+
     }
 }

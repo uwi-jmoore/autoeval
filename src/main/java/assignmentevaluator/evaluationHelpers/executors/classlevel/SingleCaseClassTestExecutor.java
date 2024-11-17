@@ -2,7 +2,6 @@ package assignmentevaluator.evaluationHelpers.executors.classlevel;
 
 
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
-import org.junit.platform.launcher.listeners.TestExecutionSummary.Failure;
 
 import assignmentevaluator.feedback.types.ConcreteTestFeedback;
 
@@ -36,33 +35,5 @@ public class SingleCaseClassTestExecutor extends ClassTestExecutor {
             handleFailure(testReturn);
         }
         assignmentFeedBack.addTestResults(testFeedback);
-    }
-
-    /**
-     * Handles the case when all tests pass by setting appropriate marks and feedback message.
-     */
-    private void handleAllPass() {
-        testFeedback.setMarks(marks);
-        testFeedback.setFeedbackMsg("All Tests Passed");
-    }
-
-    /**
-     * Handles test failures by setting a zero mark and constructing a feedback message
-     * detailing which tests failed and the reasons for failure.
-     *
-     * @param testReturn the summary of the executed test.
-     */
-    private void handleFailure(TestExecutionSummary testReturn) {
-        testFeedback.setMarks(0);
-        StringBuilder failureMsg = new StringBuilder("These tests failed: ");
-        Failure[] failures = testReturn.getFailures().toArray(new Failure[0]);
-        for (Failure failure : failures) {
-            failureMsg.append("Test: ")
-                      .append(failure.getTestIdentifier().getDisplayName())
-                      .append(" failed. Reason: ")
-                      .append(failure.getException().getMessage())
-                      .append("\t");
-        }
-        testFeedback.setFeedbackMsg(String.valueOf(failureMsg));
     }
 }

@@ -4,21 +4,20 @@ package assignmentevaluator;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.IntStream;
 
 import assignmentevaluator.evaluationHelpers.CustomCase;
 import assignmentevaluator.evaluationHelpers.executors.classlevel.MultiCaseClassTestExecutor;
+import assignmentevaluator.evaluationHelpers.executors.classlevel.SimulationTestExecutor;
 import assignmentevaluator.evaluationHelpers.executors.classlevel.SingleCaseClassTestExecutor;
 
 import assignmentevaluator.evaluationHelpers.executors.programlevel.CompileTestExecutor;
 import assignmentevaluator.evaluationHelpers.executors.programlevel.RunTestExecutor;
-import assignmentevaluator.evaluationHelpers.testsetup.classlevel.AttributeTestSetup;
-import assignmentevaluator.evaluationHelpers.testsetup.classlevel.ConstructorTestSetup;
-import assignmentevaluator.evaluationHelpers.testsetup.classlevel.ModifierMethodTestSetup;
+import assignmentevaluator.evaluationHelpers.testsetup.classlevel.*;
 import assignmentevaluator.evaluationHelpers.testsetup.programlevel.CompileTestSetup;
 import assignmentevaluator.evaluationHelpers.testsetup.programlevel.RunTestSetup;
 import assignmentevaluator.feedback.types.ConcreteTestFeedback;
 import assignmenttests.classlevel.ClassTest;
+import assignmenttests.classlevel.factory.classlevel.SimulationTestFactory;
 import assignmenttests.classlevel.factory.programlevel.CompileTestFactory;
 import assignmenttests.classlevel.factory.programlevel.RunTestFactory;
 import assignmenttests.classlevel.products.attribute.supports.AttributeDataType;
@@ -26,6 +25,7 @@ import assignmenttests.classlevel.products.attribute.supports.AttributeDefaultVa
 import assignmenttests.classlevel.products.method.supports.*;
 import assignmenttests.classlevel.factory.classlevel.AttributeSignatureTestFactory;
 import assignmenttests.classlevel.factory.classlevel.MethodTestFactory;
+import assignmenttests.classlevel.products.simulation.InstantiationMethodTarget;
 import assignmenttests.programlevel.AssignmentFilesAllPresent;
 
 import static assignmentevaluator.evaluationHelpers.EvalHelpers.*;
@@ -201,9 +201,7 @@ public class AssignmentEvaluator {
         programTestSetup = new RunTestSetup();
         programTestSetup.addAssignmentDirectory(studentAssignmentDirectory);
         programTestSetup.addMainFile(getFile(studentAssignmentDirectory,"ChatBotSimulation",".java"));
-        programTestSetup.addInput(List.of(
-            Collections.nCopies(15,"Placeholder")
-        ));
+        programTestSetup.addInput(Collections.nCopies(15,"Placeholder"));
 
         runTestExecutor.setTestSetupDetailMap(programTestSetup.getMap());
         runTestExecutor.executeTest();
@@ -234,7 +232,7 @@ public class AssignmentEvaluator {
                     System.out.println("Running class tests for class " + getFileName(f));
 //                    chatBotPlatformAttributes(assignmentFeedBack,f);
 //                    chatBotPlatformMethods(assignmentFeedBack,f);
-                    handleChatBotPlatformRetrievalMethods(assignmentFeedBack,f);
+//                    handleChatBotPlatformRetrievalMethods(assignmentFeedBack,f);
                     break;
                 case "ChatBotGenerator":
                     System.out.println("Running class tests for class " + getFileName(f));
@@ -242,7 +240,7 @@ public class AssignmentEvaluator {
                     break;
                 case "ChatBotSimulation":
                     System.out.println("Running class tests for class " + getFileName(f));
-//                    chatBotSimulation(assignmentFeedBack,f);
+                    chatBotSimulation(assignmentFeedBack,f);
                     break;
             }
         }
@@ -886,6 +884,7 @@ public class AssignmentEvaluator {
 
 
     }
+
     private static CustomCase getChatBotGeneratorCase(int i){
         CustomCase customCase = new CustomCase();
         customCase.setCustomParams(
@@ -902,6 +901,7 @@ public class AssignmentEvaluator {
         customCase.setCustomTestAttributeValue(null);
         return customCase;
     }
+
     private static String getBot(int botcode){
         return switch (botcode){
             case 1 -> "LLaMa";
@@ -912,8 +912,22 @@ public class AssignmentEvaluator {
             default -> "ChatGPT-3.5";
         };
     }
-    private void chatBotSimulation(AssignmentFeedBack assignmentFeedBack, File ChatBotSimulation){
 
+    private void chatBotSimulation(AssignmentFeedBack assignmentFeedBack, File ChatBotSimulation){
+        //checking for "Declare and initialise a ChatBotPlatform object."
+        SimulationTestExecutor simulationTestExecutor = new SimulationTestExecutor();
+        simulationTestExecutor.setEvaluatingFile(ChatBotSimulation);
+        simulationTestExecutor.setClassTest((ClassTest) new SimulationTestFactory().createAssignmentTest("object"));
+        simulationTestExecutor.setMarks(1);
+        simulationTestExecutor.setAssignmentFeedBack(assignmentFeedBack);
+
+        ObjectInstantiationTestSetup simulationTestSetup = new ObjectInstantiationTestSetup();
+        simulationTestSetup.setMethodTarget(new InstantiationMethodTarget("main", String[].class));
+        simulationTestSetup.setObject("ChatBotPlatform");
+        simulationTestSetup.setFile(ChatBotSimulation);
+
+        simulationTestExecutor.setTestSetupDetailMap(simulationTestSetup.getMap());
+        simulationTestExecutor.executeTest();
     }
 
 }
