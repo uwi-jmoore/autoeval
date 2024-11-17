@@ -1,12 +1,17 @@
 package assignmentevaluator.evaluationHelpers.executors.classlevel;
 
 import assignmentevaluator.evaluationHelpers.executors.TestExecutor;
+import assignmentevaluator.feedback.types.ConcreteTestFeedback;
 import assignmenttests.classlevel.ClassTest;
+import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import java.io.File;
 import java.util.Map;
 
 public abstract class ClassTestExecutor extends TestExecutor {
+    public ClassTestExecutor(){
+        testFeedback = new ConcreteTestFeedback();
+    }
     /** The class file being evaluated. */
     protected File evaluatingClassFile;
 
@@ -45,4 +50,33 @@ public abstract class ClassTestExecutor extends TestExecutor {
     public void setTestSetupDetailMap(Map<String, Object> testSetupDetailMap) {
         this.testSetupDetailMap = testSetupDetailMap;
     }
+
+    /**
+     * Handles the case when all tests pass by setting appropriate marks and feedback message.
+     */
+    protected void handleAllPass(){
+        testFeedback.setMarks(marks);
+        testFeedback.setFeedbackMsg("All Tests Passed");
+    }
+
+    /**
+     * Handles test failures by setting a zero mark and constructing a feedback message
+     * detailing which tests failed and the reasons for failure.
+     *
+     * @param testReturn the summary of the executed test.
+     */
+    protected void handleFailure(TestExecutionSummary testReturn){
+        testFeedback.setMarks(0);
+        StringBuilder failureMsg = new StringBuilder("These tests failed: ");
+        TestExecutionSummary.Failure[] failures = testReturn.getFailures().toArray(new TestExecutionSummary.Failure[0]);
+        for (TestExecutionSummary.Failure failure : failures) {
+            failureMsg.append("Test: ")
+                .append(failure.getTestIdentifier().getDisplayName())
+                .append(" failed. Reason: ")
+                .append(failure.getException().getMessage())
+                .append("\t");
+        }
+        testFeedback.setFeedbackMsg(String.valueOf(failureMsg));
+    }
+
 }

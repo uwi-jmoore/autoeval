@@ -141,6 +141,7 @@ public abstract class MethodTest extends ClassTestBase {
         }
         return null;
     }
+
     public void handleLoadingAttributeTestValues(Object testValues){
         if(testValues instanceof List<?> tempList && tempList.getFirst() instanceof ClassTestAttributeTestValue){
             @SuppressWarnings("unchecked")
@@ -256,6 +257,7 @@ public abstract class MethodTest extends ClassTestBase {
                 ". Reason: "+ noSuchMethodException.getMessage());
         }
     }
+
     protected boolean isMethodConstructor(ClassTestRunMethod preLoadMethod){
         return preLoadMethod.getMethodName().equals(preLoadMethod.getClassName());
     }
@@ -267,6 +269,7 @@ public abstract class MethodTest extends ClassTestBase {
         }
         return null;
     }
+
     protected void resetClassAttribute(){
         if(setupTriggered){
             for(Map.Entry<Field,Object> changedAttribute: testModifiedAttributes.entrySet()){
