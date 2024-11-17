@@ -67,6 +67,5 @@ public class EvalHelpers {
         }
         return loadedOtherField;
     }
-
 }
 

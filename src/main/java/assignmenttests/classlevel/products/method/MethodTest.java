@@ -242,9 +242,6 @@ public abstract class MethodTest extends ClassTestBase {
                     System.err.println("Could not set value for field "+ testModifiedClassAttribute.getName()
                         +" for test setup, IllegalAccessException occurred. Reason: " + illegalAccessException.getMessage());
                 }
-//                catch (InvocationTargetException | InstantiationException | NoSuchMethodException e) {
-//                    throw new RuntimeException("Failed to get loadedClass Constructor: ",e);
-//                }
             }
         }
     }
