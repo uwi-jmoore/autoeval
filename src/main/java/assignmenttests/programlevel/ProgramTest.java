@@ -2,6 +2,8 @@ package assignmenttests.programlevel;
 
 import assignmenttests.AssignmentTest;
 
+import java.io.File;
+
 /**
  * Interface for a program-level test on an assignment.
  * Extends {@link AssignmentTest} to include evaluation functionality specific to program-level criteria.
@@ -9,10 +11,6 @@ import assignmenttests.AssignmentTest;
  */
 public interface ProgramTest extends AssignmentTest {
 
-    /**
-     * Evaluates the program-level test based on the criteria defined in the implementation.
-     *
-     * @return true if the program-level test passes, false otherwise
-     */
-    boolean evaluateProgramLevelTest();
+//    boolean evaluateProgramLevelTest();
+    void setAssignmentDirectory(File assignmentDirectory);
 }

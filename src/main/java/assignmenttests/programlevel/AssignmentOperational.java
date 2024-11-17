@@ -1,12 +1,14 @@
 package assignmenttests.programlevel;
 
+
 import java.io.File;
+
 
 /**
  * Abstract class representing an operational test on an assignment.
  * Provides the structure for evaluating program-level tests and assigning marks.
  */
-public abstract class AssignmentOperational implements ProgramTest {
+public abstract class AssignmentOperational{
     private File mainFile;
     private File assignmentDirectory;
     private int marks;
@@ -16,7 +18,6 @@ public abstract class AssignmentOperational implements ProgramTest {
      *
      * @return true if the test passes, false otherwise
      */
-    @Override
     public abstract boolean evaluateProgramLevelTest();
 
     /**
@@ -24,7 +25,6 @@ public abstract class AssignmentOperational implements ProgramTest {
      *
      * @return the assigned marks if the test passes, or 0 if it fails
      */
-    @Override
     public int getMarks() {
         return evaluateProgramLevelTest() ? marks : 0;
     }
@@ -73,4 +73,6 @@ public abstract class AssignmentOperational implements ProgramTest {
     public void setMarks(int marks) {
         this.marks = marks;
     }
+
+
 }
