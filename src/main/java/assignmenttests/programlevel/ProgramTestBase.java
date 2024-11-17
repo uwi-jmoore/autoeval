@@ -1,5 +1,6 @@
 package assignmenttests.programlevel;
 
+import assignmentevaluator.evaluationHelpers.AssignmentRunner;
 import assignmenttests.AssignmentTest;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.launcher.Launcher;
@@ -15,11 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 import static assignmenttests.classlevel.ClassLevelHelpers.findMissingKeys;
-import static filehandler.filehelperservice.FileOperationHelpers.getDirectoryFilesOfExt;
 import static org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder.request;
 
 public abstract class ProgramTestBase implements AssignmentTest {
     protected static File assignmentDirectory;
+    protected AssignmentRunner runner;
+    public ProgramTestBase(){
+        runner = new AssignmentRunner();
+    }
 
     public void setAssignmentDirectory(File assignmentDirectory) {
         ProgramTestBase.assignmentDirectory = assignmentDirectory;
@@ -53,6 +57,7 @@ public abstract class ProgramTestBase implements AssignmentTest {
 
     protected void setCompileTestDetails(Map<String, Object> setUpContent){
         setAssignmentDirectory((File) setUpContent.get("assignmentDirectory"));
+        runner.setRunnerAssignmentDirectory(assignmentDirectory);
     }
 
 
@@ -61,32 +66,7 @@ public abstract class ProgramTestBase implements AssignmentTest {
      *
      * @return true if compilation is successful, false if compilation fails or if no Java files are found
      */
-    protected boolean compileAssignmentActual(){
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        if (compiler == null) {
-            System.err.println("Could Not Compile, JDK missing");
-            return false;
-        }
-
-        File[] assignmentFiles = getDirectoryFilesOfExt(assignmentDirectory, ".java");
-        assert assignmentFiles != null;
-
-        if (assignmentFiles.length == 0) {
-            System.err.println("No Java Files found");
-            return false;
-        }
-
-        int result = compiler.run(null, null, null,
-            Arrays.stream(assignmentFiles)
-                .map(File::getPath)
-                .toArray(String[]::new)
-        );
-
-        if (result == 0) {
-            return true;
-        }
-
-        System.err.println("Compilation failed");
-        return false;
+    protected boolean compileAssignmentTester(){
+        return runner.compileAssignment();
     }
 }

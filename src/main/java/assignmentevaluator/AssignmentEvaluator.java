@@ -4,6 +4,7 @@ package assignmentevaluator;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import assignmentevaluator.evaluationHelpers.CustomCase;
 import assignmentevaluator.evaluationHelpers.executors.classlevel.MultiCaseClassTestExecutor;
@@ -200,6 +201,9 @@ public class AssignmentEvaluator {
         programTestSetup = new RunTestSetup();
         programTestSetup.addAssignmentDirectory(studentAssignmentDirectory);
         programTestSetup.addMainFile(getFile(studentAssignmentDirectory,"ChatBotSimulation",".java"));
+        programTestSetup.addInput(List.of(
+            Collections.nCopies(15,"Placeholder")
+        ));
 
         runTestExecutor.setTestSetupDetailMap(programTestSetup.getMap());
         runTestExecutor.executeTest();
@@ -264,6 +268,7 @@ public class AssignmentEvaluator {
         handleAttrMessageNumber(assignmentFeedBack, chatBot);
 
     }
+
     private void handleAttrChatBotName(AssignmentFeedBack assignmentFeedBack, File chatBot) {
         SingleCaseClassTestExecutor chatBotSig = new SingleCaseClassTestExecutor();
         chatBotSig.setClassTest((ClassTest) AttributeSignatureTestFactory.createTest());
@@ -282,6 +287,7 @@ public class AssignmentEvaluator {
         chatBotSig.setTestSetupDetailMap(attributeTestSetup.getMap());
         chatBotSig.executeTest();
     }
+
     private void handleAttrNumResponsesGenerated(AssignmentFeedBack assignmentFeedBack, File chatBot) {
         SingleCaseClassTestExecutor numResponsesGeneratedSig = new SingleCaseClassTestExecutor();
         numResponsesGeneratedSig.setClassTest((ClassTest) AttributeSignatureTestFactory.createTest());

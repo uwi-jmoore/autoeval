@@ -11,6 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AssignmentCompileTest extends ProgramTestBase {
+
+    public AssignmentCompileTest(){
+        super();
+    }
     @Override
     public String toString() {
         return "Assignment Compile Test";
@@ -19,6 +23,6 @@ public class AssignmentCompileTest extends ProgramTestBase {
     @Test
     @DisplayName("Assignment Compile Test")
     public void testAssignmentCompile(){
-        assertTrue(compileAssignmentActual(),"Assignment Does Not Compile");
+        assertTrue(compileAssignmentTester(),"Assignment Does Not Compile");
     }
 }
