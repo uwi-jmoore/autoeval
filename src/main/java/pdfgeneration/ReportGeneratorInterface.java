@@ -2,6 +2,8 @@ package pdfgeneration;
 
 import java.util.List;
 
+import assignmentevaluator.AssignmentFeedBack;
+
 /**
  * The ReportGeneratorInterface defines the contract for generating a report based on test results.
  * <p>
@@ -20,7 +22,7 @@ public interface ReportGeneratorInterface {
      * @param totalPoints The total number of points scored in the tests.
      * @param outputFileName The name of the output file where the report will be saved.
      */
-    void generateReport(List<TestResult> testResults, int totalPoints, String outputFileName);
+    void generateReport(List<TestResult> testResults, int totalPoints, String outputFileName, AssignmentFeedBack feedback);
 }
 
 
