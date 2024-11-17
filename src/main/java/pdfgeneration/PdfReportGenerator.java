@@ -7,6 +7,8 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 
+import assignmentevaluator.AssignmentFeedBack;
+
 /**
  * The PdfReportGenerator class implements the ReportGeneratorInterface and generates
  * a PDF report containing the results of JUnit tests.
@@ -28,7 +30,7 @@ public class PdfReportGenerator implements ReportGeneratorInterface {
      * @param outputFileName The name of the output PDF file to be generated.
      */
     @Override
-    public void generateReport(List<TestResult> testResults, int totalPoints, String outputFileName) {
+    public void generateReport(List<TestResult> testResults, int totalPoints, String outputFileName, AssignmentFeedBack feedback) {
         try (PdfWriter writer = new PdfWriter(new FileOutputStream(outputFileName));
              Document document = new Document(new com.itextpdf.kernel.pdf.PdfDocument(writer))) {
 
@@ -45,6 +47,13 @@ public class PdfReportGenerator implements ReportGeneratorInterface {
 
             document.add(new Paragraph(" ")); 
             document.add(new Paragraph("Total Points: " + totalPoints));
+
+            // Add assignment feedback to the PDF
+            document.add(new Paragraph("Assignment Feedback:"));
+            document.add(new Paragraph("Student ID: " + feedback.getStudentID()));
+            document.add(new Paragraph("Student Name: " + feedback.getStudentName()));
+            document.add(new Paragraph("Assignment Title: " + feedback.getAssignmentTitle()));
+            document.add(new Paragraph("Expected Files: " + String.join(", ", feedback.getExpectedFiles())));
 
             System.out.println("Test report generated: " + outputFileName);
 
