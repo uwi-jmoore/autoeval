@@ -24,4 +24,6 @@ public class AggregateTest {
         testDir.populateList(directoryPath);
         assertThat(testDir.getDirectoryFiles()).containsExactly(files);
     }
+
+
 }

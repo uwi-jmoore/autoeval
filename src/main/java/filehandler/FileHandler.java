@@ -4,6 +4,7 @@ import filehandler.traversal.DirectoryIterator;
 import filehandler.zipservice.ZipUtility;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.*;
 import static filehandler.filehelperservice.FileOperationHelpers.*;
 

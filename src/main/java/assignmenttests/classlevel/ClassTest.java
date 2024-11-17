@@ -1,9 +1,9 @@
 package assignmenttests.classlevel;
 
-import java.util.Map;
+import assignmenttests.AssignmentTest;
 
-public interface ClassTest {
+
+public interface ClassTest extends AssignmentTest{
     void setClassFilePath(String classFilePath);
-    void setUpTestDetails(Map<String, String> setUpContent);
 
 }

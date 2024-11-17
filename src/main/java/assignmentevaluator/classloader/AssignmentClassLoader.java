@@ -11,53 +11,45 @@ import java.nio.file.Files;
  */
 
 public class AssignmentClassLoader extends ClassLoader {
-    private final File classPath;
+    private final File assignmentDirectory;
 
-    /**
-     * Loads a class from a file path that is passed as a String.
-     *
-     * @param classFilePath The String path of the .class file to be loaded.
-     * @return The {@link Class} object created from the specified class file.
-     * @throws IOException If there is an error reading the class file.
-     */
-    
+
     // Constructor takes the path where the class files are located
-    public AssignmentClassLoader(File classPath) {
-        this.classPath = classPath;
+    public AssignmentClassLoader(File assignmentDirectory) {
+        this.assignmentDirectory = assignmentDirectory;
     }
 
+    /**
+     * Loads a class from a class name that is passed as a String.
+     *
+     * @param className The String name of the .class file to be loaded.
+     * @return The {@link Class} object created from the specified class file.
+     * @throws ClassNotFoundException If the class name given cannot be found in the directory given by assignmentDirectory.
+     */
+
     @Override
-    public Class<?> loadClass(String name) throws ClassNotFoundException {
+    public Class<?> loadClass(String className) throws ClassNotFoundException {
+        // Check if the class is already loaded
+        Class<?> loadedClass = findLoadedClass(className);
+        if (loadedClass != null) {
+            return loadedClass;
+        }
+
         try {
-            String classFilePath = name.replace('.', File.separatorChar) + ".class";
-            File classFile = new File(classPath, classFilePath);
+            String classFilePath = className.replace('.', File.separatorChar) + ".class";
+            File classFile = new File(assignmentDirectory, classFilePath);
 
             if (classFile.exists()) {
                 byte[] classBytes = Files.readAllBytes(classFile.toPath());
-                return defineClass(name, classBytes, 0, classBytes.length);
+                return defineClass(className, classBytes, 0, classBytes.length);
             }
         } catch (IOException ioException) {
-            System.err.println("Could Not Read bytes of class file for " + name +
-                ". Reason: "+ ioException.getMessage());
+            System.err.println("Could Not Read bytes of class file for " + className +
+                ". Reason: " + ioException.getMessage());
         }
-        return super.loadClass(name);
+        //if we cannot find the class in the assignment directory, try to find the class by querying JVM
+        return super.loadClass(className);
     }
 
 }
-//Old ClassLoader
-//public class AssignmentClassLoader extends ClassLoader{
-//
-//    public Class<?> loadClassFromFile(String classFilePath) throws IOException{
-//        Path path = Paths.get(classFilePath);
-//        byte[] classBytes = Files.readAllBytes(path);
-//
-//        URL classFileURL = path.toUri().toURL();
-//        CodeSource codeSource = new CodeSource(classFileURL, (java.security.cert.Certificate[]) null);
-//
-//        // Create a ProtectionDomain with the CodeSource
-//        ProtectionDomain protectionDomain = new ProtectionDomain(codeSource, null);
-//
-//        // Define the class
-//        return defineClass(null, classBytes, 0, classBytes.length,protectionDomain);
-//    }
-//}
+
