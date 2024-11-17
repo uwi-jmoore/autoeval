@@ -1,111 +1,128 @@
 package assignmentevaluator.evaluationHelpers.executors.classlevel;
 
-import assignmentevaluator.evaluationHelpers.CustomCase;
-import assignmentevaluator.feedback.types.ConcreteTestFeedback;
-import org.junit.platform.launcher.listeners.TestExecutionSummary;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.platform.launcher.listeners.TestExecutionSummary;
+
+import assignmentevaluator.evaluationHelpers.CustomCase;
+import assignmentevaluator.feedback.types.ConcreteTestFeedback;
+
 /**
- * Executes class level tests for a student's assignment and provides feedback based on the test results.
- * Tests are executed multiple times for each supplied test condition of input parameter, attribute preset, expected post method attribute value, and expected return
- * This class evaluates a given class file by running specified tests and generates feedback on
- * whether the tests passed or failed, and assigns marks accordingly.
+ * Executes multiple test cases for class-level evaluation of a student's assignment.
+ * Each test case involves executing the same test under different conditions such as 
+ * varying input parameters, expected return values, and modified attributes.
+ * This class handles the execution of these tests and generates feedback for the results.
  */
 public class MultiCaseClassTestExecutor extends ClassTestExecutor {
+
+    /**
+     * List tracking whether each sub-test case passes or fails.
+     */
     protected List<Boolean> subTestPasses;
 
+    /**
+     * List of test cases to be executed.
+     */
     protected List<CustomCase> testCases;
 
     /**
-     * Default constructor that initializes the test feedback, the list to track test case pass and failure, and the test case conditions.
+     * Default constructor that initializes the test feedback, 
+     * the list to track test case results, and the test case conditions.
      */
-    public MultiCaseClassTestExecutor(){
+    public MultiCaseClassTestExecutor() {
         testCases = new ArrayList<>();
         subTestPasses = new ArrayList<>();
         testFeedback = new ConcreteTestFeedback();
     }
 
-    public void addTestCase(CustomCase customCase){
+    /**
+     * Adds a single test case to the list of test cases to be executed.
+     *
+     * @param customCase the test case to add.
+     */
+    public void addTestCase(CustomCase customCase) {
         testCases.add(customCase);
     }
 
-    public void setTestCases(List<CustomCase> customCases){
+    /**
+     * Sets the list of test cases to be executed.
+     *
+     * @param customCases the list of test cases to set.
+     */
+    public void setTestCases(List<CustomCase> customCases) {
         testCases = customCases;
     }
 
-
     /**
-     * Executes the assigned test case on the evaluated file and provides feedback based on the results.
+     * Executes all the assigned test cases on the evaluated file and provides feedback 
+     * based on the test results.
      */
     @Override
     public void executeTest() {
-        testType = "Multiple Case "+ test.toString();
+        testType = "Multiple Case " + test.toString();
         testFeedback.setTestType(testType);
         test.setClassFilePath(evaluatingClassFile.getAbsolutePath());
-//        test.getClassTestData().setClassFilePath(evaluatingClassFile.getAbsolutePath());
+
         StringBuilder baseMsg = new StringBuilder("Multi-case class test results: ");
-        for(CustomCase customCase: testCases){
+        for (CustomCase customCase : testCases) {
             String caseFeedback;
             test.setUpTestDetails(setUpCaseRunDetailMap(customCase));
             TestExecutionSummary testReturn = test.executeTest(test.getClass()).getSummary();
             boolean casePassed;
+
             if (testReturn.getTestsFailedCount() == 0 && testReturn.getContainersFailedCount() == 0) {
                 casePassed = true;
-                caseFeedback =  handleAllPass(customCase);
+                caseFeedback = handleAllPass(customCase);
             } else {
                 casePassed = false;
-                caseFeedback =  handleFailure(testReturn,customCase);
+                caseFeedback = handleFailure(testReturn, customCase);
             }
             subTestPasses.add(casePassed);
             baseMsg.append(caseFeedback);
         }
-        int subtestFailCount = (int) subTestPasses.stream().filter(aBoolean -> false).count();
+
+        int subtestFailCount = (int) subTestPasses.stream().filter(aBoolean -> !aBoolean).count();
         testFeedback.setFeedbackMsg(String.valueOf(baseMsg));
-        testFeedback.setMarks(subtestFailCount == testCases.size() ?
-            0 :
-            marks - subtestFailCount);
+        testFeedback.setMarks(subtestFailCount == testCases.size() ? 0 : marks - subtestFailCount);
         assignmentFeedBack.addTestResults(testFeedback);
     }
 
-
     /**
-     * Sets up the detail map for the test using the elements of the current test case.
-     * @return a {@link Map<Object, String>} readable by the setUpTestDetails() method of the classTest
+     * Sets up the details for the current test case run.
+     *
      * @param cCase the current test case being run.
+     * @return a map of setup details to configure the test.
      */
-    private Map<String, Object> setUpCaseRunDetailMap(CustomCase cCase){
+    private Map<String, Object> setUpCaseRunDetailMap(CustomCase cCase) {
         Map<String, Object> modifiedtestSetupDetailMap = testSetupDetailMap;
-        modifiedtestSetupDetailMap.put("testModifiedClassAttributes",cCase.getCustomTestAttributeValue());
-        modifiedtestSetupDetailMap.put("methodParameterInputs",cCase.getCustomParams());
-        modifiedtestSetupDetailMap.put("methodModifiedClassAttributes",cCase.getCustomExpectedAttributeValue());
-        modifiedtestSetupDetailMap.put("methodReturn",cCase.getCustomReturn());
+        modifiedtestSetupDetailMap.put("testModifiedClassAttributes", cCase.getCustomTestAttributeValue());
+        modifiedtestSetupDetailMap.put("methodParameterInputs", cCase.getCustomParams());
+        modifiedtestSetupDetailMap.put("methodModifiedClassAttributes", cCase.getCustomExpectedAttributeValue());
+        modifiedtestSetupDetailMap.put("methodReturn", cCase.getCustomReturn());
         return modifiedtestSetupDetailMap;
     }
 
     /**
-     * Handles the case when all tests pass returning an all passed feedback message.
-     * @return the feedback that all tests passed
+     * Handles the case where all tests pass for a given test case.
+     *
      * @param customCase the current test case being run.
+     * @return a feedback message indicating success.
      */
     private String handleAllPass(CustomCase customCase) {
         return "#All Tests Passed for case with; " + customCase;
-
     }
 
-
     /**
-     * Handles test failures by constructing a feedback message
-     * detailing which tests failed and the reasons for failure.
+     * Handles test failures for a given test case by constructing a detailed feedback message.
      *
-     * @return the feedback on all failed tests
      * @param testReturn the summary of the executed test.
+     * @param customCase the current test case being run.
+     * @return a feedback message indicating the details of failed tests.
      */
-    private String handleFailure(TestExecutionSummary testReturn,CustomCase customCase) {
-
-        StringBuilder failureMsg = new StringBuilder("For case with; " +customCase+ "--:these tests failed: ");
+    private String handleFailure(TestExecutionSummary testReturn, CustomCase customCase) {
+        StringBuilder failureMsg = new StringBuilder("For case with; " + customCase + "--:these tests failed: ");
         TestExecutionSummary.Failure[] failures = testReturn.getFailures().toArray(new TestExecutionSummary.Failure[0]);
         for (TestExecutionSummary.Failure failure : failures) {
             failureMsg.append("Test: ")
