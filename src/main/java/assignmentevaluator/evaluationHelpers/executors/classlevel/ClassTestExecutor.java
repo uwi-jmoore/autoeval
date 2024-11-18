@@ -6,7 +6,6 @@ import java.util.Map;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import assignmentevaluator.evaluationHelpers.executors.TestExecutor;
-import assignmentevaluator.feedback.types.ConcreteTestFeedback;
 import assignmenttests.classlevel.ClassTest;
 
 /**
@@ -31,12 +30,16 @@ public abstract class ClassTestExecutor extends TestExecutor {
      */
     protected Map<String, Object> testSetupDetailMap;
 
+    protected String Desc;
     /**
      * Constructs a {@code ClassTestExecutor} and initializes feedback with a concrete implementation.
      */
     public ClassTestExecutor() {
         testFeedback = new ConcreteTestFeedback();
+    }    public void setDesc(String desc){
+        Desc = desc;
     }
+
 
     /**
      * Sets the file being evaluated.

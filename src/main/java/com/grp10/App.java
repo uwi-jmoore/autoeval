@@ -15,7 +15,7 @@ public final class App {
         directoryPath = userInput.nextLine();
 
         // Hardcoded directory path for the sake of testing
-        directoryPath =  "C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping\\extraction_test\\main_assign";
+//        directoryPath =  "C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping\\extraction_test\\main_assign";
 
         // Create an instance of ApplicationExecutor
         ApplicationExecutor applicationExecutor = new ApplicationExecutor();

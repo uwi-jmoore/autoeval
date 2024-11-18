@@ -19,9 +19,10 @@ public class SimulationTestFactory extends testFactory {
      */
     @Override
     public AssignmentTest createAssignmentTest(String type) {
-        return switch (type) {
-            case "object" -> new ObjectInstantiationTest(); // Creates an ObjectInstantiationTest if type is "object"
-            default -> null; // Returns null for unrecognized types
+        return switch (type){
+            case "object" -> new ObjectInstantiationTest();
+            case "rem" -> new CBSIM();
+            default -> null;
         };
     }
 }

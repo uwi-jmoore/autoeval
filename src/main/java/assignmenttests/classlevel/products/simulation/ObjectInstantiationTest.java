@@ -95,6 +95,6 @@ public class ObjectInstantiationTest extends ClassTestBase implements Programmat
      */
     @Override
     public boolean executeAction() {
-        return instantiationAgent.findInstance(loadedClass);
+        return instantiationAgent.findInstance();
     }
 }
