@@ -50,7 +50,7 @@ public class InstantiationAgent {
         return instanceDetected;
     }
 
-    public boolean findInstance(Class<?> loadedClass){
+    public boolean findInstance(){
 
         String fname = file.getName().split("[.]")[0];
         String parentPath = file.getParentFile().getAbsolutePath();

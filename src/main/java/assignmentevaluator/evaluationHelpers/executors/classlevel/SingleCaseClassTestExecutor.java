@@ -1,9 +1,5 @@
 package assignmentevaluator.evaluationHelpers.executors.classlevel;
 
-import org.junit.platform.launcher.listeners.TestExecutionSummary;
-
-import assignmentevaluator.feedback.types.ConcreteTestFeedback;
-
 /**
  * Executes a single test case for a student's class-level assignment and generates feedback based on the test results.
  * This class evaluates a specified class file by running a single test case and assigns marks based on the outcome.
@@ -23,8 +19,7 @@ public class SingleCaseClassTestExecutor extends ClassTestExecutor {
      * that indicates whether the test passed or failed.
      */
     public void executeTest() {
-        // Set the test type and initialize test feedback
-        testType = test.toString();
+        testType = Desc +"-"+ test.toString();
         testFeedback.setTestType(testType);
 
         // Set the file path for the class to be evaluated

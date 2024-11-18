@@ -29,6 +29,7 @@ public abstract class ClassTestBase implements ClassTest{
         ClassTestBase.testLoader = new AssignmentClassLoader(new File(classFilePath).getParentFile());
         String className = getFileNameFromPathString(classFilePath);
         try {
+
             ClassTestBase.loadedClass = testLoader.loadClass(className);
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("ClassNotFoundException occurred while trying to load class: "

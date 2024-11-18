@@ -61,7 +61,7 @@ public class MultiCaseClassTestExecutor extends ClassTestExecutor {
      */
     @Override
     public void executeTest() {
-        testType = "Multiple Case " + test.toString();
+        testType = "For " +Desc+" -Multiple Case "+ test.toString();
         testFeedback.setTestType(testType);
         test.setClassFilePath(evaluatingClassFile.getAbsolutePath());
 
@@ -111,7 +111,18 @@ public class MultiCaseClassTestExecutor extends ClassTestExecutor {
      * @return a feedback message indicating success.
      */
     private String handleAllPass(CustomCase customCase) {
-        return "#All Tests Passed for case with; " + customCase;
+        String params = customCase.getCustomParams() == null? "" : "Input Parameters: " +customCase.getCustomParams().toString() + "\n";
+        String attributeTval = customCase.getCustomTestAttributeValue() == null ? "" : "Test set class attribute values: " +customCase.getCustomTestAttributeValue().toString() + "\n";
+        String attributeEval = customCase.getCustomExpectedAttributeValue() == null ? "" :  "Expected attribute values: " +customCase.getCustomExpectedAttributeValue().toString() + "\n";
+        String ret = customCase.getCustomReturn() == null ? "" : "Expected Return:" + customCase.getCustomReturn().toString() + "\n";
+        return "All Tests Passed for case with: \n"
+            + params
+            + attributeTval
+            + attributeEval
+            + ret
+            + "\n"
+            ;
+
     }
 
     /**
@@ -121,8 +132,9 @@ public class MultiCaseClassTestExecutor extends ClassTestExecutor {
      * @param customCase the current test case being run.
      * @return a feedback message indicating the details of failed tests.
      */
-    private String handleFailure(TestExecutionSummary testReturn, CustomCase customCase) {
-        StringBuilder failureMsg = new StringBuilder("For case with; " + customCase + "--:these tests failed: ");
+    private String handleFailure(TestExecutionSummary testReturn,CustomCase customCase) {
+
+        StringBuilder failureMsg = new StringBuilder("These tests failed: ");
         TestExecutionSummary.Failure[] failures = testReturn.getFailures().toArray(new TestExecutionSummary.Failure[0]);
         for (TestExecutionSummary.Failure failure : failures) {
             failureMsg.append("Test: ")
