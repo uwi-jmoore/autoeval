@@ -1,20 +1,36 @@
 package assignmenttests.classlevel.products.method.concrete;
 
-import assignmenttests.classlevel.ClassTestBase;
-import assignmenttests.classlevel.products.method.supports.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-
 import static assignmenttests.classlevel.ClassLevelHelpers.findMissingKeys;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import assignmenttests.classlevel.ClassTestBase;
+import assignmenttests.classlevel.products.method.supports.ClassTestAttribute;
+import assignmenttests.classlevel.products.method.supports.ClassTestAttributeExpectedValue;
+import assignmenttests.classlevel.products.method.supports.ClassTestParameter;
+import assignmenttests.classlevel.products.method.supports.ModifiesClassAttributes;
+import assignmenttests.classlevel.products.method.supports.ParameterComposed;
+
+/**
+ * Test class for verifying constructor behavior in class-level testing.
+ * This class extends {@link ClassTestBase} and implements 
+ * {@link ParameterComposed} and {@link ModifiesClassAttributes} interfaces.
+ */
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ConstructorTest extends ClassTestBase implements ParameterComposed, ModifiesClassAttributes {
     protected int index;
@@ -22,12 +38,22 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
     protected static List<ClassTestAttributeExpectedValue> methodModifiedClassAttributes;
 
 
+    /**
+     * Returns the string representation of this test class.
+     * @return String "Constructor Test".
+     */
+
     @Override
     public String toString() {
         return "Constructor Test";
     }
 
-
+      /**
+     * Sets up the test details based on the provided map content.
+     * Verifies the required keys are present and loads necessary parameters.
+     * @param setUpContent A map containing setup data such as method parameters and modified attributes.
+     */
+    
     public void setUpTestDetails(Map<String, Object> setUpContent) {
         List<String> expectedSetupContents = List.of(
             "methodParameterInputs",
@@ -41,6 +67,12 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         }
     }
 
+
+     /**
+     * Loads constructor parameters and modified class attributes from the provided setup content.
+     * @param setUpContent The map containing the setup data.
+     */
+
     protected void setConstructorTestDetails(Map<String, Object> setUpContent){
         Object constructorParams = setUpContent.get("methodParameterInputs");
         Object constructorAffectedAttrs = setUpContent.get("methodModifiedClassAttributes");
@@ -50,6 +82,10 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         loadModifiedClassAttributes(constructorAffectedAttrs);
     }
 
+     /**
+     * Loads constructor parameters from the provided object.
+     * @param mapListValue The object containing a list of constructor parameters.
+     */
     @Override
     public void loadMethodParameters(Object mapListValue) {
         if(mapListValue instanceof List<?> tempList && tempList.getFirst() instanceof ClassTestParameter){
@@ -58,6 +94,11 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
             setParameterInput(list);
         }
     }
+
+     /**
+     * Loads the modified class attributes from the provided object.
+     * @param mapListValue The object containing a list of expected modified class attributes.
+     */
 
     @Override
     public void loadModifiedClassAttributes(Object mapListValue) {
@@ -68,15 +109,30 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         }
     }
 
+     /**
+     * Sets the constructor parameters for this test class.
+     * @param inputParams The list of constructor parameters.
+     */
+
     @Override
     public void setParameterInput(List<ClassTestParameter> inputParams) {
         ConstructorTest.parameterInput = inputParams;
     }
 
+     /**
+     * Sets the modified class attributes for this test class.
+     * @param inputAttributes The list of expected modified class attributes.
+     */
+
     @Override
     public void setModifiedClassAttributes(List<ClassTestAttributeExpectedValue> inputAttributes) {
         ConstructorTest.methodModifiedClassAttributes = inputAttributes;
     }
+
+     /**
+     * Returns the values of the input parameters.
+     * @return An array of input parameter values.
+     */
 
     @Override
     public Object[] getInputParametersValues() {
@@ -91,6 +147,11 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         return paramArray.toArray(new Object[0]);
     }
 
+     /**
+     * Returns the types of the input parameters.
+     * @return An array of input parameter types.
+     */
+
     @Override
     public Class<?>[] getInputParameterTypes() {
         if(parameterInput ==null){
@@ -102,6 +163,11 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         }
         return paramArray.toArray(new Class<?>[0]);
     }
+
+     /**
+     * Returns the constructors of the loaded class, sorted by the number of parameters and parameter types.
+     * @return An array of sorted constructors.
+     */
 
     protected Constructor<?>[] getSortedConstructors(){
         Constructor<?>[] constructors = loadedClass.getConstructors();
@@ -125,10 +191,22 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         return constructors;
     }
 
+
+     /**
+     * Returns the number of unique attributes affected by the constructor.
+     * @return The number of unique affected attributes.
+     */
+
     protected int getUniqueAttributesAffected(){
         Set<ClassTestAttribute> uniqueAttributes = new HashSet<>(methodModifiedClassAttributes);
         return uniqueAttributes.size();
     }
+
+     /**
+     * Handles the constructor test and checks if the expected modified attributes match the class instance.
+     * @param classInstance The instance of the class being tested.
+     * @return True if the modified attributes match the expected values, otherwise false.
+     */
 
     protected boolean handleConstructorTest(Object classInstance){
         int constructorCount = loadedClass.getConstructors().length;
@@ -147,6 +225,14 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         }
         return false;
     }
+
+
+    /**
+     * Matches the modified class attributes with the expected values for the given class instance.
+     * @param classInstance The instance of the class being tested.
+     * @param modifiedAttributes The list of expected modified attributes.
+     * @return True if the modified attributes match the expected values, otherwise false.
+     */
 
     public boolean matchModifiedClassAttributes(Object classInstance, List<ClassTestAttributeExpectedValue> modifiedAttributes){
         for (ClassTestAttributeExpectedValue modAttr : modifiedAttributes) {
@@ -177,16 +263,35 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
         return true;
     }
 
+      /**
+     * Creates a new instance of the constructor with the input parameter values.
+     * @param constructor The constructor to create an instance of.
+     * @return The new instance created by the constructor.
+     * @throws InvocationTargetException If the constructor throws an exception.
+     * @throws InstantiationException If the class cannot be instantiated.
+     * @throws IllegalAccessException If access to the constructor is illegal.
+     */
+
     protected Object getConstructorInstance(Constructor<?> constructor)
         throws InvocationTargetException, InstantiationException, IllegalAccessException {
         return constructor.newInstance(getInputParametersValues());
     }
 
+    /**
+     * Initializes the test setup before each test method is executed.
+     */
 
     @BeforeEach
     public void initializeTest(){
         super.classTestBaseSetUp();
     }
+
+       /**
+     * Tests the existence of constructors and their ability to initialize a new instance of the class.
+     * @throws InvocationTargetException If the constructor throws an exception.
+     * @throws InstantiationException If the class cannot be instantiated.
+     * @throws IllegalAccessException If access to the constructor is illegal.
+     */
 
     @Test
     @DisplayName("Constructor Existence Test")
@@ -196,6 +301,13 @@ public class ConstructorTest extends ClassTestBase implements ParameterComposed,
             assertNotNull(getConstructorInstance(constructor),"New instance of constructor could not be initialized"); //test creation of new class instance
         }
     }
+
+     /**
+     * Tests the constructor for the expected modifications to class attributes.
+     * @throws InvocationTargetException If the constructor throws an exception.
+     * @throws InstantiationException If the class cannot be instantiated.
+     * @throws IllegalAccessException If access to the constructor is illegal.
+     */
 
     @Test
     @DisplayName("Constructor Modified Values Test")
