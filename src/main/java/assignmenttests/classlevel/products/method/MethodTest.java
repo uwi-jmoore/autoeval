@@ -1,13 +1,26 @@
 package assignmenttests.classlevel.products.method;
 
-import assignmenttests.classlevel.ClassTestBase;
-import assignmenttests.classlevel.products.method.supports.*;
-
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static assignmentevaluator.evaluationHelpers.EvalHelpers.getOuterClassAttribute;
 import static assignmenttests.classlevel.ClassLevelHelpers.findMissingKeys;
+import assignmenttests.classlevel.ClassTestBase;
+import assignmenttests.classlevel.products.method.supports.ClassTestAttributeTestValue;
+import assignmenttests.classlevel.products.method.supports.ClassTestParameter;
+import assignmenttests.classlevel.products.method.supports.ClassTestRunMethod;
+import assignmenttests.classlevel.products.method.supports.MethodReturn;
+
+/**
+ * Abstract class that provides common functionality for testing methods in a class.
+ */
 
 public abstract class MethodTest extends ClassTestBase {
     protected static Method method;
@@ -24,25 +37,65 @@ public abstract class MethodTest extends ClassTestBase {
     protected Object testResponse;
     protected Object classInstance;
 
+    /**
+     * Sets the name of the method to be tested.
+     * 
+     * @param inputMethodName The name of the method to be tested.
+     */
+
+
     protected void setMethodName(String inputMethodName){
         MethodTest.methodName = inputMethodName;
     }
+
+    /**
+     * Sets the return type of the method to be tested.
+     * 
+     * @param mr The method return type.
+     */
 
     protected void setMethodReturn (MethodReturn mr){
         MethodTest.methodReturn = mr;
     }
 
+     /**
+     * Sets whether the method to be tested is static or not.
+     * 
+     * @param isStatic Boolean indicating if the method is static.
+     */
+
     protected void setIsMethodStatic (boolean isStatic){
         MethodTest.isMethodStatic = isStatic;
     }
+
+      /**
+     * Sets the attributes of the class that will be modified during testing.
+     * 
+     * @param tv List of class attributes that will be modified during the test.
+     */
 
     protected void setTestModifiedClassAttributes (List<ClassTestAttributeTestValue> tv){
         MethodTest.testModifiedClassAttributes = tv;
     }
 
+    /**
+     * Sets the pre-test methods to be run before the actual method test.
+     * 
+     * @param testRunMethods List of methods to be executed before the test.
+     */
+
+
     protected void setPreTestMethods(List<ClassTestRunMethod> testRunMethods){
         MethodTest.preTestMethods = testRunMethods;
     }
+
+
+    /**
+     * Initializes the test details.
+     * 
+     * @param setUpContent Map containing the test setup content.
+     */
+
 
     @Override
     public void setUpTestDetails(Map<String, Object> setUpContent) {
@@ -61,6 +114,11 @@ public abstract class MethodTest extends ClassTestBase {
         }
     }
 
+
+      /**
+     * Initializes the common test setup.
+     */
+
     protected void setMethodTestDetails(Map<String, Object> setUpContent){
         setMethodName((String) setUpContent.get("methodName"));
         setMethodReturn((MethodReturn) setUpContent.get("methodReturn"));
@@ -71,6 +129,14 @@ public abstract class MethodTest extends ClassTestBase {
         handleLoadingPreTestMethods(setUpContent.get("preTestMethods"));
     }
 //
+    /**
+     * Compares the actual response of the method to the expected return value.
+     * 
+     * @param response The actual response from invoking the method.
+     * @return True if the response matches the expected return value, otherwise false.
+     */
+
+
     protected void stdMethodTestInit(){
         super.classTestBaseSetUp();
         classInstance = getInitClassInstance(loadedClass);
@@ -82,6 +148,15 @@ public abstract class MethodTest extends ClassTestBase {
         }
     }
 
+
+    /**
+     * Initializes the class instance for testing.
+     * 
+     * @param sourceClass The class to instantiate.
+     * @return The initialized class instance.
+     */
+
+
     protected boolean testMethodReturnSimilarity(Object response){
         String[] substrings = methodReturn.returnValue().toString().split("@");
         for (String substring : substrings) {
@@ -91,6 +166,14 @@ public abstract class MethodTest extends ClassTestBase {
         }
         return true;
     }
+
+
+      /**
+     * Initializes the class instance for testing.
+     * 
+     * @param sourceClass The class to instantiate.
+     * @return The initialized class instance.
+     */
 
     protected Object getInitClassInstance(Class<?> sourceClass){
         Object instance = null;
@@ -129,6 +212,12 @@ public abstract class MethodTest extends ClassTestBase {
         return instance;
     }
 
+     /**
+     * Invokes the method to be tested and returns the response.
+     * 
+     * @return The response after invoking the method.
+     */
+
     protected Object getTestResponse(){
         try {
             return method.invoke(classInstance);
@@ -142,6 +231,12 @@ public abstract class MethodTest extends ClassTestBase {
         return null;
     }
 
+    /**
+     * Handles loading attribute test values.
+     * 
+     * @param testValues The test values to load.
+     */
+
     public void handleLoadingAttributeTestValues(Object testValues){
         if(testValues instanceof List<?> tempList && tempList.getFirst() instanceof ClassTestAttributeTestValue){
             @SuppressWarnings("unchecked")
@@ -150,6 +245,13 @@ public abstract class MethodTest extends ClassTestBase {
         }
     }
 
+     /**
+     * Handles loading pre-test methods.
+     * 
+     * @param testMethods The pre-test methods to load.
+     */
+
+
     public void handleLoadingPreTestMethods(Object testMethods){
         if(testMethods instanceof List<?> tempList && tempList.getFirst() instanceof ClassTestRunMethod){
             @SuppressWarnings("unchecked")
@@ -157,6 +259,10 @@ public abstract class MethodTest extends ClassTestBase {
             setPreTestMethods(list);
         }
     }
+
+     /**
+     * Runs the pre-test methods before invoking the method to be tested.
+     */
 
     protected void handleMethodPreRunning(){
         for(ClassTestRunMethod preLoadMethod : preTestMethods){
@@ -213,6 +319,11 @@ public abstract class MethodTest extends ClassTestBase {
         }
     }
 
+     /**
+     * Handles setting up modified class attributes.
+     */
+
+
     protected void handleClassAttributeValueSetup(){
         setupTriggered = true;
         testModifiedAttributes = new HashMap<>();
@@ -247,6 +358,13 @@ public abstract class MethodTest extends ClassTestBase {
         }
     }
 
+    /**
+     * Loads the method to be tested.
+     * 
+     * @param loadedSourceClass The class containing the method.
+     * @param methodName The name of the method to load.
+     */
+
     public void loadMethod(Class<?> loadedSourceClass, String methodName){
         method = null;
         try {
@@ -258,9 +376,24 @@ public abstract class MethodTest extends ClassTestBase {
         }
     }
 
+     /**
+     * Checks whether the pre-test method is a constructor.
+     * 
+     * @param preLoadMethod The pre-test method.
+     * @return True if the method is a constructor, otherwise false.
+     */
+
     protected boolean isMethodConstructor(ClassTestRunMethod preLoadMethod){
         return preLoadMethod.getMethodName().equals(preLoadMethod.getClassName());
     }
+
+
+     /**
+     * Retrieves the constructor pre-load method.
+     * 
+     * @return The constructor pre-load method.
+     */
+
     protected ClassTestRunMethod getConstructorPreLoadMethod(){
         for(ClassTestRunMethod classTestRunMethod : preTestMethods){
             if(isMethodConstructor(classTestRunMethod)){
@@ -269,6 +402,10 @@ public abstract class MethodTest extends ClassTestBase {
         }
         return null;
     }
+
+     /**
+     * Resets the class attributes after the test.
+     */
 
     protected void resetClassAttribute(){
         if(setupTriggered){
