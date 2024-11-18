@@ -55,7 +55,5 @@ public class ApplicationExecutor {
             reportGenerator.generateReport(assignmentFeedBack.getTestResults(),totalstudentpoints,pdfname,assignmentFeedBack);
         }
 
-
-
     }
 }
