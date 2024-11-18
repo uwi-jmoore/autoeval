@@ -1,32 +1,19 @@
 package assignmentevaluator.evaluationHelpers;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Field;
 import java.util.Objects;
 
-import org.junit.platform.engine.discovery.DiscoverySelectors;
-import org.junit.platform.launcher.Launcher;
-import org.junit.platform.launcher.LauncherDiscoveryRequest;
-import org.junit.platform.launcher.TestIdentifier;
-import org.junit.platform.launcher.TestPlan;
-import static org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder.request;
-import org.junit.platform.launcher.core.LauncherFactory;
-import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
-
+import assignmentevaluator.classloader.AssignmentClassLoader;
 import static filehandler.filehelperservice.FileOperationHelpers.getDirectoryFilesOfExt;
 import static filehandler.filehelperservice.FileOperationHelpers.getFileName;
 
 /**
  * Utility class for helper methods used in evaluating assignments.
+ * Provides methods for retrieving assignment files, searching files by name,
+ * and accessing fields from classes that are not currently loaded.
  */
 public class EvalHelpers {
-    private static boolean debugMode;
-    public static void setDebugMode(boolean debug){
-        EvalHelpers.debugMode = debug;
-    }
-
-    
 
     /**
      * Retrieves an array of files with a specified extension from a given directory.
@@ -58,63 +45,27 @@ public class EvalHelpers {
     }
 
     /**
-     * Creates a map containing the details required for setting up an attribute test.
+     * Accesses and loads fields from classes not currently loaded for the current test.
+     * This method is useful for accessing fields from classes that are dynamically loaded 
+     * using the {@link AssignmentClassLoader}.
      *
-     * @param attrName The attribute name.
-     * @param dataType The data type of the attribute.
-     * @param hasDefault Indicator if the attribute has a default value.
-     * @param defaultVal The default value of the attribute.
-     * @param isFinal Indicator if the attribute is final.
-     * @param isStatic Indicator if the attribute is static.
-     * @return A map of the attribute setup details where keys represent attribute properties.
+     * @param attributeName the attribute to load from the non-loaded class.
+     * @param testLoader instance of {@link AssignmentClassLoader} to load the external class.
+     * @param className the name of the class to load, passed in as parameter to {@link AssignmentClassLoader#loadClass(String)}.
+     * @return A {@link Field} representing the loaded field from the external class, or {@code null} if loading failed.
      */
-    public static Map<String, String> createAttributeTestSetupMap(String attrName, String dataType, String hasDefault, String defaultVal, String isFinal, String isStatic) {
-        Map<String, String> map = new HashMap<>();
-        map.put("attributeName", attrName);
-        map.put("dataType", dataType);
-        map.put("hasDefault", hasDefault);
-        map.put("defaultValue", defaultVal);
-        map.put("isFinal", isFinal);
-        map.put("isStatic", isStatic);
-        return map;
-    }
+    public static Field getOuterClassAttribute(String attributeName, AssignmentClassLoader testLoader, String className) {
+        Class<?> otherClass;
+        Field loadedOtherField = null;
 
-    /**
-     * Executes tests for a given class using JUnit's platform launcher and returns a summary of the results.
-     *
-     * @param targetClass The class to be tested.
-     * @return A {@link SummaryGeneratingListener} containing the summary of test results.
-     */
-    public static SummaryGeneratingListener getTestReturn(Class<?> targetClass) {
-        Launcher launcher = LauncherFactory.create();
-        SummaryGeneratingListener listener = new SummaryGeneratingListener();
+        try {
+            otherClass = testLoader.loadClass(className);
+            loadedOtherField = otherClass.getDeclaredField(attributeName);
 
-        LauncherDiscoveryRequest request = request()
-            .selectors(
-                DiscoverySelectors.selectClass(targetClass)
-            )
-            .build();
-
-        TestPlan testPlan = launcher.discover(request);
-
-        //for debugging
-        if(debugMode){
-            System.out.println("Discovered Tests: " + testPlan.getRoots().size());
-            for (TestIdentifier testIdentifier : testPlan.getRoots()) {
-                System.out.println("Root Identifier: " + testIdentifier.getDisplayName());
-                for (TestIdentifier child : testPlan.getChildren(testIdentifier)) {
-                    System.out.println("Child Identifier: " + child.getDisplayName());
-                    for(TestIdentifier grandChild : testPlan.getChildren(child)){
-                        System.out.println("GrandChild Identifier: " + grandChild.getDisplayName());
-                    }
-                }
-            }
+        } catch (NoSuchFieldException | ClassNotFoundException e) {
+            System.err.println("Could not load field " + attributeName
+                + " trying to access outer class, NoSuchFieldException occurred. Reason: " + e.getMessage());
         }
-
-        // Execute the tests
-        launcher.execute(request, listener);
-        return listener;
+        return loadedOtherField;
     }
-
 }
-

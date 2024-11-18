@@ -5,8 +5,7 @@ import java.util.Scanner;
 
 public final class App {
     public static void main(String[] args) throws IOException {
-        // Hardcoded directory path for the sake of testing
-        String directoryPath = "C:\\Users\\felix\\Downloads\\Project src\\ASSIGNMENT 1\\AssignmentTarget";
+        String directoryPath;
 
         // Creating a Scanner object to read user input
         Scanner userInput = new Scanner(System.in);
@@ -15,11 +14,14 @@ public final class App {
         // Prompt user for the directory path where student assignments are located
         directoryPath = userInput.nextLine();
 
+        // Hardcoded directory path for the sake of testing
+//        directoryPath =  "C:\\Users\\Chimera\\Desktop\\Project_Testbed\\Unzipping\\extraction_test\\main_assign";
+
         // Create an instance of ApplicationExecutor
         ApplicationExecutor applicationExecutor = new ApplicationExecutor();
 
         try {
-            // Call the execute method, passing the directory path
+            // Call the executeTest method, passing the directory path
             applicationExecutor.execute(directoryPath);
         } catch (IOException e) {
             // Handle any potential IOExceptions
