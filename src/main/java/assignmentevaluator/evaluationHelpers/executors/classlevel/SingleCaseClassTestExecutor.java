@@ -23,7 +23,7 @@ public class SingleCaseClassTestExecutor extends ClassTestExecutor {
      * Executes the assigned test case on the evaluated file and provides feedback based on the results.
      */
     public void executeTest() {
-        testType = test.toString();
+        testType = Desc +"-"+ test.toString();
         testFeedback.setTestType(testType);
         test.setClassFilePath(evaluatingClassFile.getAbsolutePath());
         test.setUpTestDetails(testSetupDetailMap);

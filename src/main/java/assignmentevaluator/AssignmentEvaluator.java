@@ -3,8 +3,11 @@ package assignmentevaluator;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
+import assignmentevaluator.evaluationHelpers.AssignmentRunner;
 import assignmentevaluator.evaluationHelpers.CustomCase;
 import assignmentevaluator.evaluationHelpers.executors.classlevel.MultiCaseClassTestExecutor;
 import assignmentevaluator.evaluationHelpers.executors.classlevel.SimulationTestExecutor;
@@ -26,6 +29,7 @@ import assignmenttests.classlevel.products.method.supports.*;
 import assignmenttests.classlevel.factory.classlevel.AttributeSignatureTestFactory;
 import assignmenttests.classlevel.factory.classlevel.MethodTestFactory;
 import assignmenttests.classlevel.products.simulation.InstantiationMethodTarget;
+import assignmenttests.classlevel.products.simulation.MethodCalls;
 import assignmenttests.programlevel.AssignmentFilesAllPresent;
 
 import static assignmentevaluator.evaluationHelpers.EvalHelpers.*;
@@ -45,7 +49,7 @@ import filehandler.traversal.DirectoryIterator;
 //facade for evaluating all assignments
 public class AssignmentEvaluator {
     private File studentAssignmentDirectory;
-
+    private List<AssignmentFeedBack> allStudentFeedBack;
 
     private List<ClassTestAttributeExpectedValue> modifiedClassAttributes;
     private List<ClassTestAttributeTestValue> testModifiedClassAttributes;
@@ -57,7 +61,13 @@ public class AssignmentEvaluator {
         modifierMethodTestSetup = new ModifierMethodTestSetup();
         attributeTestSetup = new AttributeTestSetup();
         attributeDefaultValue = new AttributeDefaultValue();
+        allStudentFeedBack = new ArrayList<>();
     }
+
+    public List<AssignmentFeedBack> getAllStudentFeedBack(){
+        return allStudentFeedBack;
+    }
+
     /**
      * Sets the directory containing student assignments.
      * @param studentAssignmentDirectory the directory containing the student assignments
@@ -100,6 +110,7 @@ public class AssignmentEvaluator {
                 }
 
                 System.out.println("Test Results for student: "+assignmentFeedBack.getStudentName()+" : "+assignmentFeedBack.getTestResults());
+                allStudentFeedBack.add(assignmentFeedBack);
 
             }
 
@@ -215,7 +226,7 @@ public class AssignmentEvaluator {
      */
 
 
-    private void assignmentClassTestActual(AssignmentFeedBack assignmentFeedBack, File studentAssignmentDirectory){
+    private void assignmentClassTestActual(AssignmentFeedBack assignmentFeedBack, File studentAssignmentDirectory) throws IOException {
         //get list of all classes
         File[] assignmentClasses = getAssignmentFiles(studentAssignmentDirectory,".class");
         System.out.println("Running Class tests for student: "+ assignmentFeedBack.getStudentName());
@@ -224,23 +235,24 @@ public class AssignmentEvaluator {
             switch (filename){
                 case "ChatBot":
                     System.out.println("Running class tests for class " + getFileName(f));
-//                    ChatBotAttributes(assignmentFeedBack,f);
-//                    chatBotMethods(assignmentFeedBack,f);
-//                    handleChatBotRetrievalMethods(assignmentFeedBack,f);
+                    ChatBotAttributes(assignmentFeedBack,f);
+                    chatBotMethods(assignmentFeedBack,f);
+                    handleChatBotRetrievalMethods(assignmentFeedBack,f);
                     break;
                 case "ChatBotPlatform":
                     System.out.println("Running class tests for class " + getFileName(f));
-//                    chatBotPlatformAttributes(assignmentFeedBack,f);
-//                    chatBotPlatformMethods(assignmentFeedBack,f);
-//                    handleChatBotPlatformRetrievalMethods(assignmentFeedBack,f);
+                    chatBotPlatformAttributes(assignmentFeedBack,f);
+                    chatBotPlatformMethods(assignmentFeedBack,f);
+                    handleChatBotPlatformRetrievalMethods(assignmentFeedBack,f);
                     break;
                 case "ChatBotGenerator":
                     System.out.println("Running class tests for class " + getFileName(f));
-//                    chatBotGeneratorMethods(assignmentFeedBack,f);
+                    chatBotGeneratorMethods(assignmentFeedBack,f);
                     break;
                 case "ChatBotSimulation":
                     System.out.println("Running class tests for class " + getFileName(f));
-                    chatBotSimulation(assignmentFeedBack,f);
+//                    chatBotSimulation(assignmentFeedBack,f);
+//                    cbSIM(assignmentFeedBack,f);
                     break;
             }
         }
@@ -270,6 +282,7 @@ public class AssignmentEvaluator {
     private void handleAttrChatBotName(AssignmentFeedBack assignmentFeedBack, File chatBot) {
         SingleCaseClassTestExecutor chatBotSig = new SingleCaseClassTestExecutor();
         chatBotSig.setClassTest((ClassTest) AttributeSignatureTestFactory.createTest());
+        chatBotSig.setDesc("chatBotName");
         chatBotSig.setEvaluatingFile(chatBot);
         chatBotSig.setAssignmentFeedBack(assignmentFeedBack);
         chatBotSig.setMarks(1);
@@ -290,6 +303,7 @@ public class AssignmentEvaluator {
         SingleCaseClassTestExecutor numResponsesGeneratedSig = new SingleCaseClassTestExecutor();
         numResponsesGeneratedSig.setClassTest((ClassTest) AttributeSignatureTestFactory.createTest());
         numResponsesGeneratedSig.setEvaluatingFile(chatBot);
+        numResponsesGeneratedSig.setDesc("numResponsesGenerated");
         numResponsesGeneratedSig.setAssignmentFeedBack(assignmentFeedBack);
         numResponsesGeneratedSig.setMarks(1);
         attributeTestSetup.addAttributeName("numResponsesGenerated");
@@ -309,6 +323,7 @@ public class AssignmentEvaluator {
         SingleCaseClassTestExecutor messageLimitSig = new SingleCaseClassTestExecutor();
         messageLimitSig.setClassTest((ClassTest) AttributeSignatureTestFactory.createTest());
         messageLimitSig.setEvaluatingFile(chatBot);
+        messageLimitSig.setDesc("messageLimit");
         messageLimitSig.setAssignmentFeedBack(assignmentFeedBack);
         messageLimitSig.setMarks(3);
         attributeTestSetup.addAttributeName("messageLimit");
@@ -330,6 +345,7 @@ public class AssignmentEvaluator {
         SingleCaseClassTestExecutor messageNumberSig = new SingleCaseClassTestExecutor();
         messageNumberSig.setClassTest((ClassTest) AttributeSignatureTestFactory.createTest());
         messageNumberSig.setEvaluatingFile(chatBot);
+        messageNumberSig.setDesc("messageNumber");
         messageNumberSig.setAssignmentFeedBack(assignmentFeedBack);
         messageNumberSig.setMarks(2);
         attributeTestSetup.addAttributeName("messageNumber");
@@ -360,6 +376,7 @@ public class AssignmentEvaluator {
         SingleCaseClassTestExecutor chatBotConstructor = new SingleCaseClassTestExecutor();
         chatBotConstructor.setClassTest((ClassTest) MethodTestFactory.createTest("constructor"));
         chatBotConstructor.setEvaluatingFile(chatBot);
+        chatBotConstructor.setDesc("ChatBot Constructor");
         chatBotConstructor.setAssignmentFeedBack(assignmentFeedBack);
         chatBotConstructor.setMarks(3);
 
@@ -407,6 +424,7 @@ public class AssignmentEvaluator {
         SingleCaseClassTestExecutor generateResponse = new SingleCaseClassTestExecutor();
         generateResponse.setClassTest((ClassTest) MethodTestFactory.createTest("modifier"));
         generateResponse.setEvaluatingFile(chatBot);
+        generateResponse.setDesc("generateResponse");
         generateResponse.setAssignmentFeedBack(assignmentFeedBack);
         generateResponse.setMarks(5);
         methodInputParameters = null;
@@ -437,6 +455,7 @@ public class AssignmentEvaluator {
     private void handleMethodPrompt(AssignmentFeedBack assignmentFeedBack, File chatBot){
         MultiCaseClassTestExecutor promptTest = new MultiCaseClassTestExecutor();
         promptTest.setClassTest((ClassTest) MethodTestFactory.createTest("modifier"));
+        promptTest.setDesc("prompt");
         promptTest.setEvaluatingFile(chatBot);
         promptTest.setAssignmentFeedBack(assignmentFeedBack);
         promptTest.setMarks(4);
@@ -496,6 +515,7 @@ public class AssignmentEvaluator {
         SingleCaseClassTestExecutor botsSig = new SingleCaseClassTestExecutor();
         botsSig.setClassTest((ClassTest) AttributeSignatureTestFactory.createTest());
         botsSig.setEvaluatingFile(chatBotPlatform);
+        botsSig.setDesc("bots");
         botsSig.setAssignmentFeedBack(assignmentFeedBack);
         botsSig.setMarks(2);
         attributeTestSetup.addAttributeName("bots");
@@ -526,6 +546,7 @@ public class AssignmentEvaluator {
         SingleCaseClassTestExecutor chatBotPlatformConstructor = new SingleCaseClassTestExecutor();
         chatBotPlatformConstructor.setClassTest((ClassTest) MethodTestFactory.createTest("constructor"));
         chatBotPlatformConstructor.setEvaluatingFile(chatBotPlatform);
+        chatBotPlatformConstructor.setDesc("chatBotPlatform");
         chatBotPlatformConstructor.setAssignmentFeedBack(assignmentFeedBack);
         chatBotPlatformConstructor.setMarks(2);
 
@@ -546,7 +567,7 @@ public class AssignmentEvaluator {
 
     private void handleMethodAddChatBot(AssignmentFeedBack assignmentFeedBack, File chatBotPlatform){
         MultiCaseClassTestExecutor addChatBot = new MultiCaseClassTestExecutor();
-
+        addChatBot.setDesc("addChatBot");
         addChatBot.setClassTest((ClassTest) MethodTestFactory.createTest("modifier"));
         addChatBot.setEvaluatingFile(chatBotPlatform);
         addChatBot.setAssignmentFeedBack(assignmentFeedBack);
@@ -577,6 +598,7 @@ public class AssignmentEvaluator {
     private void handleMethodInteractWithBot(AssignmentFeedBack assignmentFeedBack, File chatBotPlatform){
         MultiCaseClassTestExecutor interactWithBot = new MultiCaseClassTestExecutor();
         interactWithBot.setClassTest((ClassTest) MethodTestFactory.createTest("modifier"));
+        interactWithBot.setDesc("interactWithBot");
         interactWithBot.setEvaluatingFile(chatBotPlatform);
         interactWithBot.setAssignmentFeedBack(assignmentFeedBack);
         interactWithBot.setMarks(5);
@@ -667,6 +689,7 @@ public class AssignmentEvaluator {
     private void getChatBotName(AssignmentFeedBack assignmentFeedBack, File ChatBot){
         SingleCaseClassTestExecutor getChatBotName = new SingleCaseClassTestExecutor();
         getChatBotName.setClassTest((ClassTest) MethodTestFactory.createTest("retriever"));
+        getChatBotName.setDesc("getChatBotName");
         getChatBotName.setAssignmentFeedBack(assignmentFeedBack);
         getChatBotName.setEvaluatingFile(ChatBot);
         getChatBotName.setMarks(1);
@@ -689,6 +712,7 @@ public class AssignmentEvaluator {
     private void getNumResponses(AssignmentFeedBack assignmentFeedBack, File ChatBot){
         SingleCaseClassTestExecutor numResp = new SingleCaseClassTestExecutor();
         numResp.setClassTest((ClassTest) MethodTestFactory.createTest("retriever"));
+        numResp.setDesc("getNumResponsesGenerated");
         numResp.setAssignmentFeedBack(assignmentFeedBack);
         numResp.setEvaluatingFile(ChatBot);
         numResp.setMarks(1);
@@ -716,6 +740,7 @@ public class AssignmentEvaluator {
     private void getTotalNumResponses(AssignmentFeedBack assignmentFeedBack, File ChatBot){
         SingleCaseClassTestExecutor totResp = new SingleCaseClassTestExecutor();
         totResp.setClassTest((ClassTest) MethodTestFactory.createTest("retriever"));
+        totResp.setDesc("getTotalNumResponsesGenerated");
         totResp.setAssignmentFeedBack(assignmentFeedBack);
         totResp.setEvaluatingFile(ChatBot);
         totResp.setMarks(2);
@@ -745,6 +770,7 @@ public class AssignmentEvaluator {
         totRem.setClassTest((ClassTest) MethodTestFactory.createTest("retriever"));
         totRem.setAssignmentFeedBack(assignmentFeedBack);
         totRem.setEvaluatingFile(ChatBot);
+        totRem.setDesc("getTotalNumMessagesRemaining");
         totRem.setMarks(3);
 
         String testClass = "ChatBot";
@@ -771,6 +797,7 @@ public class AssignmentEvaluator {
         SingleCaseClassTestExecutor limReach = new SingleCaseClassTestExecutor();
         limReach.setClassTest((ClassTest) MethodTestFactory.createTest("retriever"));
         limReach.setAssignmentFeedBack(assignmentFeedBack);
+        limReach.setDesc("limitReached");
         limReach.setEvaluatingFile(ChatBot);
         limReach.setMarks(3);
 
@@ -799,6 +826,7 @@ public class AssignmentEvaluator {
         botToString.setClassTest((ClassTest) MethodTestFactory.createTest("retriever"));
         botToString.setAssignmentFeedBack(assignmentFeedBack);
         botToString.setEvaluatingFile(ChatBot);
+        botToString.setDesc("toString");
         botToString.setMarks(1);
 
         String testClass = "ChatBot";
@@ -827,7 +855,7 @@ public class AssignmentEvaluator {
         botToString.setAssignmentFeedBack(assignmentFeedBack);
         botToString.setEvaluatingFile(ChatBotPlatform);
         botToString.setMarks(6);
-
+        botToString.setDesc("getChatBotList");
 
         ClassTestRunMethod addChatBot1 = new ClassTestRunMethod();
         addChatBot1.setMethodName("addChatBot");
@@ -863,6 +891,7 @@ public class AssignmentEvaluator {
         cbGenerator.setClassTest((ClassTest) MethodTestFactory.createTest("modifier"));
         cbGenerator.setEvaluatingFile(chatBotGenerator);
         cbGenerator.setAssignmentFeedBack(assignmentFeedBack);
+        cbGenerator.setDesc("generateChatBotLLM");
         cbGenerator.setMarks(7);
 
         List<CustomCase> cases = new ArrayList<>();
@@ -871,6 +900,7 @@ public class AssignmentEvaluator {
             cases.add(c);
         }
         cbGenerator.setTestCases(cases);
+        modifierMethodTestSetup.addPreTestMethods(null);
         modifierMethodTestSetup.addMethodName("generateChatBotLLM");
         modifierMethodTestSetup.addMethodReturn(null);
         modifierMethodTestSetup.addIsStatic(false);
@@ -917,6 +947,7 @@ public class AssignmentEvaluator {
         //checking for "Declare and initialise a ChatBotPlatform object."
         SimulationTestExecutor simulationTestExecutor = new SimulationTestExecutor();
         simulationTestExecutor.setEvaluatingFile(ChatBotSimulation);
+        simulationTestExecutor.setDesc("chatBotSimulation Part 1");
         simulationTestExecutor.setClassTest((ClassTest) new SimulationTestFactory().createAssignmentTest("object"));
         simulationTestExecutor.setMarks(1);
         simulationTestExecutor.setAssignmentFeedBack(assignmentFeedBack);
@@ -927,6 +958,26 @@ public class AssignmentEvaluator {
         simulationTestSetup.setFile(ChatBotSimulation);
 
         simulationTestExecutor.setTestSetupDetailMap(simulationTestSetup.getMap());
+        simulationTestExecutor.executeTest();
+    }
+
+    private void cbSIM(AssignmentFeedBack assignmentFeedBack, File ChatBotSimulation) throws IOException {
+        SimulationTestExecutor simulationTestExecutor = new SimulationTestExecutor();
+        simulationTestExecutor.setEvaluatingFile(ChatBotSimulation);
+        simulationTestExecutor.setDesc("chatBotSimulation part 2");
+        simulationTestExecutor.setClassTest((ClassTest) new SimulationTestFactory().createAssignmentTest("rem"));
+        simulationTestExecutor.setMarks(7);
+        simulationTestExecutor.setAssignmentFeedBack(assignmentFeedBack);
+
+        CBSIMTestSetup cbsimTestSetup = new CBSIMTestSetup();
+        String fname = ChatBotSimulation.getName().split("[.]")[0];
+        String parentPath = ChatBotSimulation.getParentFile().getAbsolutePath();
+        String completePath = Paths.get(parentPath, fname + ".java").toString();
+        String content = new String(Files.readAllBytes(Paths.get(completePath)));
+        cbsimTestSetup.setFilePath(content);
+        cbsimTestSetup.setConsoleInputs(List.of("Hello World","Bot Number 1"));
+        cbsimTestSetup.setMethodCalls(List.of(new MethodCalls("addChatBot",7)));
+        simulationTestExecutor.setTestSetupDetailMap(cbsimTestSetup.getMap());
         simulationTestExecutor.executeTest();
     }
 

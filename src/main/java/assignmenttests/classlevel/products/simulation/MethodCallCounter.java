@@ -11,7 +11,7 @@ public class MethodCallCounter {
 
     public static int countMethodCalls(String filePath, String methodName) throws IOException {
         JavaParser parser = new JavaParser();
-        CompilationUnit cu = parser.parse(Paths.get(filePath)).getResult().orElseThrow(() -> new IOException("Unable to parse file"));
+        CompilationUnit cu = parser.parse(filePath).getResult().orElseThrow(() -> new IOException("Unable to parse file"));
 
         long count = cu.findAll(MethodCallExpr.class).stream()
             .filter(mce -> mce.getNameAsString().equals(methodName))

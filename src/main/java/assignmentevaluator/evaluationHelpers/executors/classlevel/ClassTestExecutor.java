@@ -21,7 +21,11 @@ public abstract class ClassTestExecutor extends TestExecutor {
     /** A map containing setup details for the test case. */
     protected Map<String, Object> testSetupDetailMap;
 
+    protected String Desc;
 
+    public void setDesc(String desc){
+        Desc = desc;
+    }
 
 
     /**

@@ -262,6 +262,9 @@ public abstract class MethodTest extends ClassTestBase {
         return preLoadMethod.getMethodName().equals(preLoadMethod.getClassName());
     }
     protected ClassTestRunMethod getConstructorPreLoadMethod(){
+        if (preTestMethods==null){
+            return null;
+        }
         for(ClassTestRunMethod classTestRunMethod : preTestMethods){
             if(isMethodConstructor(classTestRunMethod)){
                 return classTestRunMethod;
