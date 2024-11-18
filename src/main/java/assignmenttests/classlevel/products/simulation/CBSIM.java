@@ -29,6 +29,7 @@ public class CBSIM extends ClassTestBase {
     protected void setMethodCalls(List<MethodCalls> methodCalls){
         CBSIM.methodCalls = methodCalls;
     }
+
     protected void setExpectedConsoleOutputs(List<String> expectedConsoleOutputs){
         CBSIM.expectedConsoleOutputs = expectedConsoleOutputs;
     }
@@ -75,7 +76,7 @@ public class CBSIM extends ClassTestBase {
         List<String> expectedSetupContents = List.of(
             "consoleOut",
             "methodCall",
-            "file"
+            "filepath"
         );
         List<String> missingKeys = findMissingKeys(setUpContent,expectedSetupContents);
         if(missingKeys.isEmpty()){
@@ -86,5 +87,8 @@ public class CBSIM extends ClassTestBase {
     }
     protected void setUpSimTest(Map<String, Object> setUpContent){
         super.classTestBaseSetUp();
+        setMethodCalls((List<MethodCalls>) setUpContent.get("methodCall"));
+        setExpectedConsoleOutputs((List<String>) setUpContent.get("consoleOut"));
+        setFilePath((String) setUpContent.get("filepath"));
     }
 }

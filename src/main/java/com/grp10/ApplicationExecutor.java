@@ -1,7 +1,11 @@
 package com.grp10;
 
 import assignmentevaluator.AssignmentEvaluator;
+import assignmentevaluator.AssignmentFeedBack;
+import assignmentevaluator.feedback.TestFeedback;
 import filehandler.FileHandler;
+import pdfgeneration.PdfReportGenerator;
+import pdfgeneration.ReportGeneratorInterface;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +44,17 @@ public class ApplicationExecutor {
 
         // Evaluate the assignments
         evaluator.evaluateAssignments();
+
+        //print reports
+        for(AssignmentFeedBack assignmentFeedBack : evaluator.getAllStudentFeedBack()){
+            ReportGeneratorInterface reportGenerator = new PdfReportGenerator();
+            int totalstudentpoints = assignmentFeedBack.getTestResults()
+                .stream()
+                .mapToInt(TestFeedback::getTestMarks).sum();
+            String pdfname = "Assignment Report "+assignmentFeedBack.getStudentID()+".pdf";
+            reportGenerator.generateReport(assignmentFeedBack.getTestResults(),totalstudentpoints,pdfname,assignmentFeedBack);
+        }
+
 
 
     }

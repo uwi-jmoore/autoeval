@@ -22,7 +22,7 @@ public class MethodChecker {
     @Test
     public void testMainMethodExists() {
         try {
-          
+
             Method method = App.class.getDeclaredMethod("main", String[].class);
             testResults.add(new TestResult("Main method exists", true));
             totalPoints += 10;
@@ -34,6 +34,6 @@ public class MethodChecker {
 
     @AfterEach
     public void tearDown() {
-        reportGenerator.generateReport(testResults, totalPoints, "TestReport.pdf");
+//        reportGenerator.generateReport(testResults, totalPoints, "TestReport.pdf");
     }
 }
