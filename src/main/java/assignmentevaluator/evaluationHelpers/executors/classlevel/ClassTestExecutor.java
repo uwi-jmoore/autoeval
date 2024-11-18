@@ -1,29 +1,42 @@
 package assignmentevaluator.evaluationHelpers.executors.classlevel;
 
-import assignmentevaluator.evaluationHelpers.executors.TestExecutor;
-import assignmentevaluator.feedback.types.ConcreteTestFeedback;
-import assignmenttests.classlevel.ClassTest;
-import org.junit.platform.launcher.listeners.TestExecutionSummary;
-
 import java.io.File;
 import java.util.Map;
 
+import org.junit.platform.launcher.listeners.TestExecutionSummary;
+
+import assignmentevaluator.evaluationHelpers.executors.TestExecutor;
+import assignmenttests.classlevel.ClassTest;
+
+/**
+ * An abstract executor class responsible for evaluating a class-level test case.
+ * This class defines the structure and shared functionality required for running
+ * tests on a specific class file and handling the results.
+ */
 public abstract class ClassTestExecutor extends TestExecutor {
-    public ClassTestExecutor(){
-        testFeedback = new ConcreteTestFeedback();
-    }
-    /** The class file being evaluated. */
+
+    /**
+     * The class file being evaluated.
+     */
     protected File evaluatingClassFile;
 
-    /** The specific class level test that will be executed on the student's class. */
+    /**
+     * The specific class-level test that will be executed on the student's class.
+     */
     protected ClassTest test;
 
-    /** A map containing setup details for the test case. */
+    /**
+     * A map containing setup details for the test case.
+     */
     protected Map<String, Object> testSetupDetailMap;
 
     protected String Desc;
-
-    public void setDesc(String desc){
+    /**
+     * Constructs a {@code ClassTestExecutor} and initializes feedback with a concrete implementation.
+     */
+    public ClassTestExecutor() {
+        testFeedback = new ConcreteTestFeedback();
+    }    public void setDesc(String desc){
         Desc = desc;
     }
 
@@ -56,20 +69,21 @@ public abstract class ClassTestExecutor extends TestExecutor {
     }
 
     /**
-     * Handles the case when all tests pass by setting appropriate marks and feedback message.
+     * Handles the scenario where all tests pass successfully.
+     * Sets the appropriate marks and feedback message to indicate success.
      */
-    protected void handleAllPass(){
+    protected void handleAllPass() {
         testFeedback.setMarks(marks);
         testFeedback.setFeedbackMsg("All Tests Passed");
     }
 
     /**
-     * Handles test failures by setting a zero mark and constructing a feedback message
-     * detailing which tests failed and the reasons for failure.
+     * Handles test failures by assigning a zero mark and generating feedback
+     * that includes detailed information about the failed tests and their reasons.
      *
      * @param testReturn the summary of the executed test.
      */
-    protected void handleFailure(TestExecutionSummary testReturn){
+    protected void handleFailure(TestExecutionSummary testReturn) {
         testFeedback.setMarks(0);
         StringBuilder failureMsg = new StringBuilder("These tests failed: ");
         TestExecutionSummary.Failure[] failures = testReturn.getFailures().toArray(new TestExecutionSummary.Failure[0]);
@@ -82,5 +96,5 @@ public abstract class ClassTestExecutor extends TestExecutor {
         }
         testFeedback.setFeedbackMsg(String.valueOf(failureMsg));
     }
-
 }
+
