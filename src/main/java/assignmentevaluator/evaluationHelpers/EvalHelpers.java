@@ -5,13 +5,13 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 import assignmentevaluator.classloader.AssignmentClassLoader;
-
-
 import static filehandler.filehelperservice.FileOperationHelpers.getDirectoryFilesOfExt;
 import static filehandler.filehelperservice.FileOperationHelpers.getFileName;
 
 /**
  * Utility class for helper methods used in evaluating assignments.
+ * Provides methods for retrieving assignment files, searching files by name,
+ * and accessing fields from classes that are not currently loaded.
  */
 public class EvalHelpers {
 
@@ -44,16 +44,17 @@ public class EvalHelpers {
         return null;
     }
 
-
     /**
      * Accesses and loads fields from classes not currently loaded for the current test.
+     * This method is useful for accessing fields from classes that are dynamically loaded 
+     * using the {@link AssignmentClassLoader}.
      *
-     * @param attributeName the attribute to load from the non-loaded Class
-     * @param testLoader instance of AssignmentClassLoader to load the external class
-     * @param className the name of the class to load, passed in as parameter to testLoader.loadClass()
-     * @return A {@link Field} representing the loaded field from the external class.
+     * @param attributeName the attribute to load from the non-loaded class.
+     * @param testLoader instance of {@link AssignmentClassLoader} to load the external class.
+     * @param className the name of the class to load, passed in as parameter to {@link AssignmentClassLoader#loadClass(String)}.
+     * @return A {@link Field} representing the loaded field from the external class, or {@code null} if loading failed.
      */
-    public static Field getOuterClassAttribute(String attributeName, AssignmentClassLoader testLoader, String className){
+    public static Field getOuterClassAttribute(String attributeName, AssignmentClassLoader testLoader, String className) {
         Class<?> otherClass;
         Field loadedOtherField = null;
 
@@ -62,10 +63,9 @@ public class EvalHelpers {
             loadedOtherField = otherClass.getDeclaredField(attributeName);
 
         } catch (NoSuchFieldException | ClassNotFoundException e) {
-            System.err.println("Could not load field "+ attributeName
-                +"trying to access outer class , NoSuchFieldException occurred. Reason: " + e.getMessage());
+            System.err.println("Could not load field " + attributeName
+                + " trying to access outer class, NoSuchFieldException occurred. Reason: " + e.getMessage());
         }
         return loadedOtherField;
     }
 }
-
