@@ -12,12 +12,39 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-
+/**
+ * The {@code InstantiationAgent} class is responsible for detecting instances of a 
+ * specified class within a given Java file. It checks the fields of a class and searches 
+ * for instances of the target class, as well as parsing the file to identify class 
+ * instantiations.
+ * 
+ * <p>This class uses reflection and the JavaParser library to perform its tasks:</p>
+ * <ul>
+ *     <li>It inspects the fields of a given class to find instances of the target class.</li>
+ *     <li>It parses a Java file to search for variable declarations of the target class type.</li>
+ * </ul>
+ */
 public class InstantiationAgent {
+    /**
+     * Flag indicating whether an instance of the target class has been detected.
+     */
     protected static boolean instanceDetected = false;
+
+    /**
+     * The name of the target class to search for in the file.
+     */
     protected static String targetClassName;
+
+    /**
+     * The file containing the code to be analyzed.
+     */
     protected static File file;
 
+    /**
+     * Tests the fields of a class for instances of the target class.
+     * 
+     * @param fields The fields of the class to test.
+     */
     public void testFields(Field[] fields){
         for (Field field : fields) {
             field.setAccessible(true);
@@ -35,23 +62,44 @@ public class InstantiationAgent {
                     + illegalAccessException.getMessage()
                 );
             }
-
         }
     }
+
+    /**
+     * Sets the target class name to search for in the fields and the Java file.
+     * 
+     * @param className The name of the class to search for.
+     */
     public void setTargetClassName(String className) {
         InstantiationAgent.targetClassName = className;
     }
 
+    /**
+     * Sets the file to be analyzed.
+     * 
+     * @param file The file containing the Java code to analyze.
+     */
     public void setFile(File file){
         InstantiationAgent.file = file;
     }
-    // Method to check if the target instance was detected
+
+    /**
+     * Checks whether an instance of the target class was detected in the file.
+     * 
+     * @return {@code true} if an instance was detected, {@code false} otherwise.
+     */
     public boolean isInstanceDetected() {
         return instanceDetected;
     }
 
-    public boolean findInstance(){
-
+    /**
+     * Searches the given file for an instance of the target class by parsing the file and checking
+     * for variable declarations of the target class type.
+     * 
+     * @param loadedClass The class being loaded for analysis.
+     * @return {@code true} if an instance of the target class was found, {@code false} otherwise.
+     */
+    public boolean findInstance(Class<?> loadedClass){
         String fname = file.getName().split("[.]")[0];
         String parentPath = file.getParentFile().getAbsolutePath();
         String completePath = Paths.get(parentPath, fname + ".java").toString();
@@ -76,14 +124,29 @@ public class InstantiationAgent {
         return false;
     }
 
+    /**
+     * A helper class that visits variable declarations in the parsed Java file and checks if 
+     * any of the variables are of the target class type.
+     */
     private static class VariableVisitor extends VoidVisitorAdapter<Void> {
         private final String targetType;
         private boolean found = false;
 
+        /**
+         * Constructs a {@code VariableVisitor} for the given target type.
+         * 
+         * @param targetType The target class type to search for.
+         */
         public VariableVisitor(String targetType) {
             this.targetType = targetType;
         }
 
+        /**
+         * Visits a variable declaration and checks if it is of the target type.
+         * 
+         * @param var The variable declaration to visit.
+         * @param arg Additional argument, not used here.
+         */
         public void visit(VariableDeclarator var, Void arg) {
             super.visit(var, arg);
             if (var.getType().asString().equals(targetType)) {
@@ -91,10 +154,14 @@ public class InstantiationAgent {
             }
         }
 
+        /**
+         * Returns whether a variable of the target class type was found.
+         * 
+         * @return {@code true} if a variable of the target class type was found, 
+         *         {@code false} otherwise.
+         */
         public boolean getFound() {
             return found;
         }
-
-
     }
 }

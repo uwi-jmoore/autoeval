@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"assignmenttests.classlevel.factory.classlevel","l":"AttributeSignatureTestFactory"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"assignmenttests.classlevel.products.method","l":"MethodTest"}];updateSearchResults();
